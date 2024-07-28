@@ -11,6 +11,14 @@
 
 ## TODO
 
+- Interaction with subject (communicate with message API...)
+  - Scroll to question
+  - Get loaded answers
+
+- verify ID...
+- coeff...
+
+- Import to Odin (can't test it yet...)
+
 - Images/Files questions
-- Scroll to question
 - Support for PDF Form subjects

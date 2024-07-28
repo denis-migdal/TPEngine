@@ -46,5 +46,19 @@ body {
 
     .answer {
         display:flex;
+        gap: 10px;
+
+        & > .opts {
+            flex-grow: 0;
+            flex-shrink: 0;
+        }
+
+        & .text {
+            min-height: 1.2rem;
+        }
+
+        &.suspicious .sus {
+            background-color: orange;
+        }
     }
 }
