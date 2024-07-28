@@ -1,0 +1,50 @@
+body {
+    width : 100vw;
+    height: 100vh;
+
+    padding: 0;
+    margin : 0;
+
+    display: flex;
+
+    .correct {
+        background-color: lightgreen;
+    }
+    .wrong {
+        background-color: #FFCCCB;
+    }
+
+    input {
+        background-color: transparent;
+    }
+
+    & > iframe {
+        border: none;
+        border-right: 1px solid black;
+    }
+
+    & > * {
+        flex: 1 1 0px;
+    }
+
+    main {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        height: 100vh;
+    }
+
+    .question {
+        border-bottom: 1px solid black;
+        border-top: 1px solid black;
+    }
+
+    #answers {
+        flex: 1 1 0px;
+        overflow-y: auto;
+    }
+
+    .answer {
+        display:flex;
+    }
+}
