@@ -1,1 +1,119 @@
-Un exemple de sujet...
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Sujet</title>
+        <style>
+            body {
+                padding: 0;
+                margin: 0;
+            }
+            main {
+                height: 100vh;
+                overflow: auto;
+            }
+            .answer_highlight {
+                background-color: yellow;
+            }
+        </style>
+        <script>
+
+            addEventListener("message", (e) => {
+                highlight(e.data);
+            })
+
+            function highlight(q_id) {
+
+                document.querySelector(".answer_highlight")?.classList.remove("answer_highlight");
+
+                const answers = [...document.querySelectorAll("input")]; // TODO...
+
+                const answer = answers[q_id];
+                answer.classList.add('answer_highlight');
+
+                const main = document.querySelector('main');
+
+                const vh = document.documentElement.clientHeight;
+                const ah = answer.clientHeight;
+
+                main.scrollTo({
+                    top: answer.offsetTop - (document.documentElement.clientHeight / 2 + ah / 2),
+                    behavior: "instant"
+                })
+                //TODO: scroll2middle...
+            }
+        </script>
+    </head>
+    <body>
+        <main>
+            <h1>Un exemple de sujet...</h1>
+
+            <input value="A"/>
+            <input value="A"/>
+            <input value="A"/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <input value="B"/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <input value="C"/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <input value="D"/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <input value="E"/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <input value="F"/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <input value="G"/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <input value="H"/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <input value="I"/>
+        </main>
+    </body>
+</html>

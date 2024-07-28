@@ -11,14 +11,13 @@
 
 ## TODO
 
-- Interaction with subject (communicate with message API...)
-  - Scroll to question
-  - Get loaded answers
-
 - verify ID...
 - coeff...
+- auto-correct if equals to corrige
 
 - Import to Odin (can't test it yet...)
 
 - Images/Files questions
+- code questions (JS/Py/HTML/CSS/Shell)
+- Tableur questions (PDF export ?)
 - Support for PDF Form subjects

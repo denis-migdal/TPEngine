@@ -109,6 +109,10 @@ if(saved_data !== null) {
 
 function printAnswers(answers: Rendus, q_id: number) {
 
+    try {
+        iframe.contentWindow?.postMessage(q_id);
+    } catch(e) {}
+
     qid_html.textContent = `${q_id+1}`;
 
     let data: Record<string, Answer[]> = {};

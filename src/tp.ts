@@ -15,11 +15,14 @@ export function decodeAnswers(content: string) {
 
     const data = JSON.parse(text);
 
-    for(let i = 0; i < data.length; ++i)
+    for(let i = 0; i < data.length; ++i) {
+        if( data[i] === null )
+            data[i] = "";
         if(typeof data[i] === 'string')
             data[i] = {
                 text: data[i] ?? ""
             };
+    }
 
     return data;
 }
