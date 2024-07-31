@@ -179,6 +179,12 @@ function printAnswers(answers: Rendus, q_id: number) {
 
 }
 
+function setSujet(url: string) {
+    iframe.src = url;
+
+    localStorage.setItem("TPEngine.sujet", url);
+}
+
 const iframe = document.querySelector('iframe')!
 document.querySelector('#load_subject')!.addEventListener('click', () => {
 
@@ -186,9 +192,14 @@ document.querySelector('#load_subject')!.addEventListener('click', () => {
     if(url === null)
         return;
 
-    iframe.src = url;
-
+    setSujet(url);
 });
+
+const params = new URLSearchParams( window.location.search );
+if( params.has("sujet") )
+    setSujet(params.get("sujet")! );
+else if( localStorage.getItem("TPEngine.sujet") !== null )
+    setSujet( localStorage.getItem("TPEngine.sujet")! );
 
 document.querySelector('#prev')!.addEventListener("click", () => {
     

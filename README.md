@@ -11,13 +11,16 @@
 
 ## TODO
 
+- CSV export...
 - verify ID...
 - coeff...
-- auto-correct if equals to corrige
+- auto-correct if equals to corrige...
 
 - Import to Odin (can't test it yet...)
 
-- Images/Files questions
-- code questions (JS/Py/HTML/CSS/Shell)
-- Tableur questions (PDF export ?)
-- Support for PDF Form subjects
+- Questions types :
+  - Images/Files
+  - exec code in Browser (JS/Py/HTML/CSS/Shell/SQL)
+  - Tableur (PDF export ?)
+
+- Support for PDF Form subjects ?
