@@ -30,7 +30,10 @@ export function decodeAnswers(content: string) {
 const encoder = new TextEncoder();
 export function encodeAnswers(answers: any) {
 
-    const json = JSON.stringify(answers);
+    return JSON.stringify(answers, null, '\t');
+
+    /*
+     const json = JSON.stringify(answers):
     const encoded = encoder.encode(json);
 
     const hex = [...encoded].map(
@@ -39,7 +42,7 @@ export function encodeAnswers(answers: any) {
         }
     ).join('');
 
-    return btoa(hex);
+    return btoa(hex);*/
 }
 
 /*
