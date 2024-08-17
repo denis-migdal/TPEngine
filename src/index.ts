@@ -6,11 +6,19 @@ type Answer = {
     grade      ?: number,
     suspicious ?: boolean
 };
+
+type File = {
+    type: string,
+    b64_content: string,
+    parsed_content: any
+}
+
 type Rendu = {
     id  : string,
     name: string,
     filename: string,
-    answers : Answer[]
+    answers : Answer[],
+    files: Record<string, File>
 }
 type Rendus = Record<string, Rendu>;
 
