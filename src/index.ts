@@ -49,6 +49,8 @@ document.querySelector('#import_answers')!.addEventListener('click', async () =>
     const zip = new JSZip();
     await zip.loadAsync(file.content);
 
+    data = {};
+
     for(let filename in zip.files) {
 
         //TODO: allows only one file...
