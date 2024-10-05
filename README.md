@@ -11,16 +11,15 @@
 
 ## TODO
 
-- CSV export...
-- verify ID...
-- coeff...
-- auto-correct if equals to corrige...
+- Moodle ID to Odin ID conversion...
 
-- Import to Odin (can't test it yet...)
+- verif identical zip.
+
+- auto-correct if equals to corrige...
+  -> spaces/break-lines/casse.
+- distance entre rendus.
 
 - Questions types :
   - Images/Files
   - exec code in Browser (JS/Py/HTML/CSS/Shell/SQL)
   - Tableur (PDF export ?)
-
-- Support for PDF Form subjects ?
