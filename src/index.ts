@@ -23,13 +23,21 @@ document.querySelector('#export_csv')!.addEventListener('click', async () => {
 
     const rendus = ansBrowser.rendus;
 
+    console.warn(rendus.data);
+
     const lines = Object.values(rendus.data).map( ({student_id, student_name, rendu}) => {
 
         let data: string[] = [];
-        for(let i = 0; i < rendu.nbQuestions; ++i)
-            data.push( rendu.getAnswer(i).grade + "\t" + (rendu.getAnswer(i).suspicious??"") + "\t" + (rendu.getAnswer(i).comments ?? "") );
-
-        return [student_name, student_id, 0, "", ...data].join('\t');
+        let count = 0;
+        for(let i = 0; i < rendu.nbQuestions; ++i) {
+            const answer = rendu.getAnswer(i);
+            count += answer.grade ?? 0;
+            let comment = answer.comments ?? "";
+            if( comment.length )
+                comment = `"${comment.replaceAll('"', '""')}"`;
+            data.push( (answer.grade ?? 0) + "\t" + (answer.suspicious??"") + "\t" + comment );
+        }
+        return [student_name, student_id, count, "", ...data].join('\t');
     }).join('\n');
 
     download( lines , rendus.filename + ".csv", ".csv");

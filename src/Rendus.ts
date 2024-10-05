@@ -1,6 +1,6 @@
 const JSZip = require("jszip");
 
-import Rendu from "Rendu";
+import Rendu from "./Rendu";
 
 export type StudentRendu = {
     rendu: Rendu,
@@ -51,7 +51,7 @@ export default class Rendus {
             let parts = student_dir.split('_');
 
             const student_id   = parts[parts.length - 3];
-            const student_name = parts.slice(0, parts.length - 4).join('_');
+            const student_name = parts.slice(0, parts.length - 3).join('_');
 
             data[student_id] = {
                 filename,
