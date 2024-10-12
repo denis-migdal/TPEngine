@@ -11,6 +11,8 @@
 
 ## TODO
 
+- bug avec ctrl+Z ?
+
 - Moodle ID to Odin ID conversion...
 
 - verif identical zip.
