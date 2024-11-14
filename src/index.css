@@ -55,6 +55,7 @@ body {
 
         & .text {
             min-height: 1.2rem;
+            white-space: pre;
         }
 
         &.suspicious .sus {
