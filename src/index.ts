@@ -23,8 +23,6 @@ document.querySelector('#export_csv')!.addEventListener('click', async () => {
 
     const rendus = ansBrowser.rendus;
 
-    console.warn(rendus.data);
-
     const lines = Object.values(rendus.data).map( ({student_id, student_name, rendu}) => {
 
         let data: string[] = [];

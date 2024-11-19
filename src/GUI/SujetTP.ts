@@ -1,9 +1,23 @@
-import Rendu from "Rendu";
-import { buffer2hex, hex2buffer } from "Utils";
+import Rendu from "../Rendu";
+import { buffer2hex, hex2buffer } from "../Utils";
 
 // h4ck...
 export const root_path = ["localhost", "127.0.0.1"].includes(location.hostname) ? "/dist/dev/pages/" : "/Cours/dist/dev/pages/";
-const PAGE = window.location.pathname.slice( root_path.length, -1 ).replace("/TP/", "_");
+
+let p = new URLSearchParams(location.search);
+let PAGE = window.location.pathname.slice( root_path.length, -1 ).replace("/TP/", "_");
+
+if( p.has('ds') ) {
+
+    let place = p.get('place');
+    if( place === null ) {
+        place = prompt('Entrez votre n° de place (e.g. S15-1A)')!.toUpperCase();
+        history.pushState({}, "", `${location.search}&place=${place}`);
+    }
+
+    PAGE = `${location.hostname}_${place}_${p.get('ds')}_DS`;
+}
+
 
 const fields = [ ...document.querySelectorAll<HTMLElement>("[contenteditable]") ];
 
@@ -11,7 +25,7 @@ const fields = [ ...document.querySelectorAll<HTMLElement>("[contenteditable]") 
 for(let i = 0; i < fields.length; ++i) {
 
     fields[i].addEventListener('input', () => {
-        SUJET.updateAnswer(i, fields[i].textContent!);
+        SUJET.updateAnswer(i, fields[i].textContent!, fields[i].getAttribute('lang') );
     });
 }
 
@@ -65,8 +79,10 @@ export default class SujetTP {
         //TODO: scroll2middle...
     }
 
-    updateAnswer(q_id: number, content: string) {
+    updateAnswer(q_id: number, content: string, qtype: string|null) {
         this.#rendu!.getAnswer(q_id).text = content;
+        if(qtype !== null)
+            this.#rendu!.getAnswer(q_id).qtype = qtype;
         this.#on_changes(false);
     }
 

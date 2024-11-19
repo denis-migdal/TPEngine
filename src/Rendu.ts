@@ -2,6 +2,7 @@ const JSZip = require("jszip");
 
 export type Answer = {
     text: string,
+    qtype      ?: string,
     comments   ?: string,
     grade      ?: number,
     suspicious ?: boolean
