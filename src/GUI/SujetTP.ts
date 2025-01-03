@@ -7,6 +7,8 @@ export const root_path = ["localhost", "127.0.0.1"].includes(location.hostname) 
 let p = new URLSearchParams(location.search);
 let PAGE = window.location.pathname.slice( root_path.length, -1 ).replace("/TP/", "_");
 
+let EXPORT_FILENAME = PAGE;
+
 if( p.has('ds') ) {
 
     let place = p.get('place');
@@ -15,7 +17,7 @@ if( p.has('ds') ) {
         history.pushState({}, "", `${location.search}&place=${place}`);
     }
 
-    PAGE = `${location.hostname}_${place}_${p.get('ds')}_DS`;
+    EXPORT_FILENAME = `${location.hostname}_${place}_${p.get('ds')}_DS`;
 }
 
 
@@ -48,7 +50,7 @@ export default class SujetTP {
     }
 
     get filename() {
-        return `${PAGE}.zip`;
+        return `${EXPORT_FILENAME}.zip`;
     }
 
     get rendu() {
@@ -111,25 +113,5 @@ export default class SujetTP {
         }
     }
 }
-
-/*
-
-for(let i = 0; i < answers_fields.length; ++i ) {
-
-    answers_fields[i].addEventListener('input', () => {
-        const answer_txt = answers_fields[i].textContent!;
-        
-        //RENDU.getAnswer(i).text = answer_txt;
-
-        //TODO...
-        //localStorage.setItem(`answers:${PAGE}`, JSON.stringify(answers) );
-    });
-}
-// init...
-
-//TODO get real type...
-let answers = answers_fields.map( e => { return { text: ""} } );
-
-*/
 
 export const SUJET = new SujetTP();
