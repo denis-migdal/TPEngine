@@ -27,7 +27,7 @@ const fields = [ ...document.querySelectorAll<HTMLElement>("[contenteditable]") 
 for(let i = 0; i < fields.length; ++i) {
 
     fields[i].addEventListener('input', () => {
-        SUJET.updateAnswer(i, fields[i].textContent!, fields[i].getAttribute('lang') );
+        SUJET.updateAnswer(i, fields[i].innerText!, fields[i].getAttribute('lang') );
     });
 }
 
@@ -100,7 +100,7 @@ export default class SujetTP {
 
             const answer = this.#rendu!.getAnswer(i);
 
-            fields[i].textContent = answer.text;
+            fields[i].innerText = answer.text;
             fields[i].dispatchEvent( new CustomEvent("input") );
 
             fields[i].classList.remove('wrong', 'correct', 'comment');
