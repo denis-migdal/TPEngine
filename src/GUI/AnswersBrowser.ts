@@ -118,10 +118,13 @@ export default class AnswersBrowser {
     `<div class="answer${ answer_status }${sus_status}">
         <div class="opts"><span class="ok">[O]</span><span class="nok">[X]</span><span class="sus">[S]</span><br/>(${ rendus.length })</div>
         <div class="field">
-            <div class="text">${answer}</div>
+            <div class="text"></div>
             <input class="comment" value="${comment}" />
         </div>
     </div>`);
+
+            const answer_text = answer_html.querySelector('.text')!;
+            answer_text.textContent = answer;
 
             // events...
 
