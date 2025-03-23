@@ -2,7 +2,7 @@ import LISS from "@LISS/libs/LISS";
 import { Question } from "@TPEngine/Rendu";
 
 const html = require('!!raw-loader!./index.html').default;
-const css  = require('!!raw-loader!./index.css' ).default;
+export const css  = require('!!raw-loader!./index.css' ).default;
 
 export function buildEmptyQuestion<T>(): Question<T> {
     return {

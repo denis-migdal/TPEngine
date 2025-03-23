@@ -1,0 +1,10 @@
+:host {
+
+    --nb_cols: 1;
+
+    .answer_list {
+        display: grid;
+        grid-template-columns: repeat( var(--nb_cols), 0fr 1fr);
+        column-gap: 5px;
+    }
+}
