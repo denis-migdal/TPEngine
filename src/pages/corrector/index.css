@@ -7,6 +7,21 @@ body {
 
     display: flex;
 
+    #filter > div {
+        position: absolute;
+        background-color: light-dark(white, black);
+        border: 1px solid gray;
+
+        & .students {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+    #filter:not(:hover) > div {
+        display: none;
+    }
+
+    /* TODO... */
     .correct {
         background-color: lightgreen;
     }

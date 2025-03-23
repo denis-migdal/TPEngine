@@ -1,0 +1,39 @@
+:host(.answer_highlight) {
+    & .answer {
+        background-color: #440;
+    }
+}
+
+:host {
+    & .answer {
+        white-space: pre-wrap;
+
+        border-radius: 3px;
+        border: 1px solid light-dark(#444, #ccc);
+        background-color: light-dark(#ccc, #444);;
+        padding-left : 8px;
+        padding-right: 8px;
+        
+        &.correct {
+            border: 4px solid green;
+        }
+        &.minor {
+            border: 4px solid yellow;
+        }
+        &.wrong {
+            border: 4px solid orange;
+        }
+        &.zero {
+            border: 4px solid red;
+        }
+        
+        &::after {
+            content: attr(comments); /* todo */
+            color: orange;
+            font-style: italic;
+            padding-top: 10px;
+            margin-top: 10px;
+            display: block;
+        }
+    }
+}

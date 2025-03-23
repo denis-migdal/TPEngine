@@ -1,7 +1,12 @@
-import Rendus from './Rendus.ts';
-import AnswersBrowser from "./GUI/AnswersBrowser.ts";
+import Rendus from '@TPEngine/Rendus';
+import AnswersBrowser from "@TPEngine/AnswersBrowser";
+
+import { upload } from '@TPEngine/utils/upload';
+import { download } from '@TPEngine/utils/download';
 
 let ansBrowser = new AnswersBrowser();
+
+console.warn("here");
 
 document.querySelector('#export_answers')!.addEventListener('click', async () => {
 
@@ -17,7 +22,7 @@ document.querySelector('#export_answers')!.addEventListener('click', async () =>
 
 document.querySelector('#export_csv')!.addEventListener('click', async () => {
 
-//Odin : NUMERO|NOTE|INFOSJURY.
+    //Odin : NUMERO|NOTE|INFOSJURY.
     if( ansBrowser.rendus === null )
         return;
 
@@ -44,16 +49,48 @@ document.querySelector('#export_csv')!.addEventListener('click', async () => {
 
 document.querySelector('#import_answers')!.addEventListener('click', async () => {
 
-    const file = await loadFromFile(".zip");
-    ansBrowser.rendus = await Rendus.loadFromArrayBuffer(file.filename, file.content);
-});
+    const file = (await upload(".zip"))!;
 
+	const filename = file.name;
+    const data     = await file!.arrayBuffer();
+
+    const rendus = await Rendus.loadFromArrayBuffer(filename, data);
+
+    //TODO...
+    ansBrowser.rendus = rendus;
+});
 
 function setSujet(url: string) {
     iframe.src = url;
 
     localStorage.setItem("TPEngine.sujet", url);
 }
+
+function studentList(): string[] {
+    return [...document.querySelectorAll<HTMLInputElement>("#filter .students input")]
+            .filter(e => e.checked)
+            .map( e => (e as any).student);
+}
+
+const checkAll = document.querySelector<HTMLInputElement>("#filter > div > input")!;
+checkAll!.addEventListener('click', () => {
+    for(let elem of document.querySelectorAll<HTMLInputElement>("#filter .students input") )
+        elem.checked = checkAll.checked;
+
+    ansBrowser.filter = studentList();
+});
+
+document.querySelector("#filter .students")!.addEventListener("click", (ev) => {
+    const target = ev.target! as HTMLElement;
+    if(target.tagName !== "INPUT")
+        return;
+
+    console.warn( (target as any).student );
+
+    ansBrowser.filter = studentList();
+});
+
+//TODO: update...
 
 const iframe = document.querySelector('iframe')!
 document.querySelector('#load_subject')!.addEventListener('click', () => {
@@ -77,66 +114,3 @@ document.querySelector('#prev')!.addEventListener("click", () => {
 document.querySelector('#next')!.addEventListener("click", () => {
     ansBrowser.next_question();
 });
-
-// Download
-
-// better : https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/downloads/download
-
-// https://stackoverflow.com/questions/13405129/javascript-create-and-save-file
-// Function to download data to a file
-export function download(data:ArrayBuffer|string, filename: string, type:string) {
-    var file = new Blob([data], {type: type});
-    if ('msSaveOrOpenBlob' in window.navigator) // IE10+
-        (window.navigator as any).msSaveOrOpenBlob(file, filename);
-    else { // Others
-        var a = document.createElement("a"),
-                url = URL.createObjectURL(file);
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(function() {
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);  
-        }, 0); 
-    }
-}
-
-// load...
-import { str2html } from "./Utils/str2html";
-export async function loadFromFile(src: string) {
-
-	if( ! window )
-		throw new Error('Can\'t use Browser load outside of a Browser!');
-
-	document.querySelector('#file-selector')?.remove(); // lazy remove (can't detect cancel event)
-
-	let input = str2html<HTMLInputElement>(`<input type="file" id="file-selector" style='display:none' accept="${src}">`);
-	document.body.append(input);
-
-	let p = new Promise( (r) => {
-
-		input.addEventListener('change', (event: any) => {
-			
-			let file = event.target.files[0];
-			let filename = file.name;
-
-    		const reader = new FileReader();
-			reader.addEventListener('load', (event: any) => {
-				input.remove();
-				r([filename, event.target.result]);
-			});
-			reader.readAsArrayBuffer(file);
-		});
-		input.click();
-	});
-
-	let [filename, content] = ((await p) as [filename: string, data: ArrayBuffer]);
-
-	input.remove();
-
-	return {
-		filename,
-		content
-	}
-}

@@ -1,50 +1,52 @@
+import { buffer2str, str2buffer } from "./utils/buffer";
+
 const JSZip = require("jszip");
 
-export type Answer = {
-    text: string,
-    qtype      ?: string,
-    comments   ?: string,
-    grade      ?: number,
-    suspicious ?: boolean
-};
+export type Question<T extends any = unknown> = {
+    answer: {
+        value     ?: T,
+        grade     ?: number,
+        comment   ?: string
+        suspicious?: boolean,
+    },
+    meta?: {
+        type    : string,
+        invite  : string,
+        //TODO...
+    }
+}
 
 export default class Rendu {
 
-    /* files : not supported yet */
+    answers: any[] = [];
 
-    #answers: Answer[];
+    async saveToLocalStorage(name: string) {
+        const data = buffer2str( await this.saveToArrayBuffer() );
+        localStorage.setItem(name, data);
+    }
+    async loadFromLocalStorage(name: string) {
 
-    constructor(answers: Answer[] = []) {
-        this.#answers = answers;
-        this.nbQuestions = answers.length;
+        const saved_data = localStorage.getItem(name);
+        if(saved_data === null) {
+            this.answers = [];
+            return;
+        }
+        await this.loadFromArrayBuffer( str2buffer(saved_data) );
     }
 
-    getAnswer(idx: number) {
-
-        // h4ck
-        while( this.#answers.length <= idx )
-            this.#answers.push({text: ""});
-
-        return this.#answers[idx];
-    }
-
-    readonly nbQuestions: number;
-
-    async toArrayBuffer() {
-        
+    async saveToArrayBuffer() {
         const zip = new JSZip();
-        zip.file("answers", JSON.stringify(this.#answers, null, '\t') );
+        zip.file("answers", JSON.stringify(this.answers, null, '\t') );
         return await zip.generateAsync({type:"arraybuffer"});
     }
 
-    static async loadFromArrayBuffer(content: ArrayBuffer) {
+    async loadFromArrayBuffer(content: ArrayBuffer) {
 
         const zip = new JSZip();
         await zip.loadAsync(content);
 
-        const data = JSON.parse( await zip.file("answers").async("string") );
+        this.answers = JSON.parse( await zip.file("answers").async("string") );
 
-        return new Rendu(data);
+        return this
     }
-
 }

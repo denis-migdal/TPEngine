@@ -1,0 +1,8 @@
+:host {
+
+    & .answer {
+        display: flex;
+        gap: 5px;
+    }
+
+}

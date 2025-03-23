@@ -1,11 +1,10 @@
 {
-    "exclude": ["node_modules", "webpack.config.js", "build", "dist"],
+    "include": ["src"],
     "compilerOptions": {
-        "rootDir": ".",
-        "outDir": "./dist/",
-        "baseUrl": "./",
+        "outDir": "./build/TS",
         "paths": {
-        "*": ["src/*", "libs/*"]
+            "@LISS/*" : ["./libs/LISS/V3/*"],
+            "@TPEngine/*": ["./src/*"]
         },
         "sourceMap": true,
         "alwaysStrict": true,
@@ -16,7 +15,7 @@
         "noFallthroughCasesInSwitch": true,
         "noImplicitOverride": true,
         "noImplicitReturns": true,
-        "allowImportingTsExtensions": true,
+        "allowSyntheticDefaultImports": true,
 
         "module": "esnext",
         "target": "esnext",

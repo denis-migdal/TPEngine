@@ -1,12 +1,14 @@
-import Rendus, { StudentRendu } from "Rendus";
-import { str2html } from "../Utils/str2html.ts";
-import { buffer2hex, hex2buffer } from "Utils";
-import { Answer } from "Rendu.ts";
+import Rendus, { StudentRendu } from "@TPEngine/Rendus";
+import { buffer2str, str2buffer } from "@TPEngine/utils/buffer";
+import { Question } from "@TPEngine/Rendu";
+
+import "@TPEngine/Responses/RText";
+import { RText } from "@TPEngine/Responses/RText";
 
 //TODO...
 const iframe = document.querySelector('iframe')!
 
-const answers_html = document.querySelector('#answers');
+const answers_html = document.querySelector<HTMLElement>('#answers')!;
 const qid_html = document.querySelector('#q_id')!;
 const nbq_html = document.querySelector('#nb_q')!;
 
@@ -21,9 +23,11 @@ export default class AnswersBrowser {
 
         (async () => {
             let {filename, content} = JSON.parse(saved_data);
-            content = hex2buffer(content);
+            content = str2buffer(content);
 
             this.rendus = await Rendus.loadFromArrayBuffer(filename, content); // force update...
+
+
         })();
     }
 
@@ -35,16 +39,38 @@ export default class AnswersBrowser {
     }
 
     set rendus(rendus: Rendus) {
+
         this.#rendus = rendus;
         nbq_html.textContent = `${rendus.nbQuestions}`;
+
+        this.#rendus.corrige.saveToArrayBuffer().then( (e) => {
+            iframe.contentWindow!.postMessage({ type: "corrige", value: e });
+        });
+
+        const filter = document.querySelector('#filter .students')!;
+        let options = [];
+        for(let student in rendus.data) {
+            const line = document.createElement('div');
+            const check = document.createElement("input");
+            (check as any).student = student;
+            check.setAttribute("type", "checkbox");
+            check.checked = true;
+            line.append(check, student);
+            options.push(line);
+        }
+        
+        filter.replaceChildren(...options);
+        this.#filter = Object.keys(rendus.data);
+
         this.current_question = 0; // force update
+        
         this.#on_changes();
     }
 
-    #updateCorr( rendus: StudentRendu[], q_id: number, callback: (a: Answer) => void ) {
+    #updateCorr( rendus: StudentRendu[], q_id: number, callback: (a: Question) => void ) {
 
         for(let rendu of rendus)
-            callback( rendu.rendu.getAnswer(q_id) );
+            callback( rendu.rendu.answers[q_id] );
 
         this.#on_changes();
     }
@@ -52,7 +78,7 @@ export default class AnswersBrowser {
     async #on_changes() {
 
         const filename = this.#rendus!.filename;
-        const content  = buffer2hex( await this.#rendus!.toArrayBuffer() );
+        const content  = buffer2str( await this.#rendus!.toArrayBuffer() );
     
         localStorage.setItem("sav", JSON.stringify({content, filename}) );
     }
@@ -75,6 +101,18 @@ export default class AnswersBrowser {
     get current_question() {
         return this.#cur_q;
     }
+
+    #filter: string[] = [];
+    set filter(f: string[]) {
+        this.#filter = f;
+        this.current_question = this.current_question; // force update...
+    }
+
+    getAnswers(id: number) {
+        return Object.entries(this.#rendus!.data)
+                    .filter( ([k,v]) => this.#filter.includes(k) )
+                    .map( ([k,v]) => v.rendu.answers[id] );
+    }
     
     set current_question(cur_q: number) {
 
@@ -83,8 +121,19 @@ export default class AnswersBrowser {
 
         // highlight question in subject...
         try {
-            iframe.contentWindow?.postMessage(cur_q);
-        } catch(e) {}
+            iframe.contentWindow?.postMessage({type: "highlight", value: cur_q});
+        } catch(e) {
+            console.warn(e);
+        }
+
+        console.warn( this.#rendus!.data);
+        console.warn( this.getAnswers(cur_q) );
+
+        RText.print(answers_html, this.getAnswers(cur_q) )
+
+        return;
+
+        //TODO...
 
         let answers: Record<string, StudentRendu[]> = {};
         for( let rendu of Object.values(this.#rendus!.data) )
