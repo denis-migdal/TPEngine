@@ -19,7 +19,7 @@ class QText extends LISS({html, style:css, css})<Partial<Question<string>>> {
             this.signal.value = buildEmptyQuestion<string>();
 
         const invite = this.host.textContent!;
-        this.content.querySelector(".invite")!.textContent = invite;
+        //this.content.querySelector(".invite")!.textContent = invite;
 
         this.signal.value.meta = {
             invite,

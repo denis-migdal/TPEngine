@@ -44,7 +44,7 @@ export default class AnswersBrowser {
         nbq_html.textContent = `${rendus.nbQuestions}`;
 
         this.#rendus.corrige.saveToArrayBuffer().then( (e) => {
-            iframe.contentWindow!.postMessage({ type: "corrige", value: e });
+            iframe.contentWindow!.postMessage({ type: "corrige", value: e }, "*");
         });
 
         const filter = document.querySelector('#filter .students')!;
@@ -121,7 +121,7 @@ export default class AnswersBrowser {
 
         // highlight question in subject...
         try {
-            iframe.contentWindow?.postMessage({type: "highlight", value: cur_q});
+            iframe.contentWindow?.postMessage({type: "highlight", value: cur_q}, "*");
         } catch(e) {
             console.warn(e);
         }
