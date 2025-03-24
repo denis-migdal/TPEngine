@@ -1,145 +1,207 @@
-import Rendus, { StudentRendu } from "@TPEngine/Rendus";
-import { buffer2str, str2buffer } from "@TPEngine/utils/buffer";
-import { Question } from "@TPEngine/Rendu";
-
 import "@TPEngine/Responses/RText";
 import { RText } from "@TPEngine/Responses/RText";
+import Signal from "@LISS/src/signals/Signal";
+import { Rendus, RendusConv } from "./structs/Rendus";
+import FileManager, { FileManagerOpts } from "./structs/FileManager";
+import whenDOMContentLoaded from "@LISS/src/utils/DOM/whenDOMContentLoaded";
+import { Answer, Answers2Buffer } from "./structs/Answers";
 
-//TODO...
+//TODO: in init GUI...
 const iframe = document.querySelector('iframe')!
 
 const answers_html = document.querySelector<HTMLElement>('#answers')!;
-const qid_html = document.querySelector('#q_id')!;
-const nbq_html = document.querySelector('#nb_q')!;
+const qid_html     = document.querySelector('#q_id')!;
+const qnb_html     = document.querySelector('#q_nb')!;
+
+// not saved ?
+type AnswersPage = {
+    qid   : number,
+    qnb   : number,
+    filter: string[]
+    // ?
+    //TODO answers (?) - ou outside (?)
+};
 
 
-export default class AnswersBrowser {
+export class AnswersBrowser implements FileManagerOpts<Rendus> {
+
+    readonly extension = ".zip";
+    readonly converter = RendusConv;
+    readonly localStorage_name = "sav";
+
+    get export_filename(): string {
+        return this.#data.value?.filename!;
+    }
+
+    readonly #data = new FileManager(this);
+
+    // not saved.
+    #answers_page = new Signal<AnswersPage>({
+        qid   : 0,
+        qnb   : 0,
+        filter: [],
+    });
 
     constructor() {
 
-        const saved_data = localStorage.getItem("sav");
-        if(saved_data === null)
-            return;
+        this.#initGUI();
 
-        (async () => {
-            let {filename, content} = JSON.parse(saved_data);
-            content = str2buffer(content);
+        // file changed
+        this.#data.listen( async () => {
 
-            this.rendus = await Rendus.loadFromArrayBuffer(filename, content); // force update...
+            const value = this.#data.content.value;
+            if(value === null)
+                return; // dunno what to do...
 
+            //TODO: update sujet too...
 
-        })();
-    }
+            const buffer = await Answers2Buffer(value.corrige);
+            iframe.contentWindow!.postMessage({ type: "corrige", value: buffer }, "*");
 
-    #cur_q = 0;
-    #rendus: Rendus|null = null;
+            const filter = document.querySelector('#filter .students')!;
+            let options = [];
+            for(let rendu of value.rendus) {
+                const line = document.createElement('div');
+                const check = document.createElement("input");
+                (check as any).student = rendu.student_id;
+                check.setAttribute("type", "checkbox");
+                check.checked = true;
+                line.append(check, rendu.student_id);
+                options.push(line);
+            }
+            
+            filter.replaceChildren(...options);
 
-    get rendus() {
-        return this.#rendus!;
-    }
-
-    set rendus(rendus: Rendus) {
-
-        this.#rendus = rendus;
-        nbq_html.textContent = `${rendus.nbQuestions}`;
-
-        this.#rendus.corrige.saveToArrayBuffer().then( (e) => {
-            iframe.contentWindow!.postMessage({ type: "corrige", value: e }, "*");
+            const qnb = value.corrige.length;
+            this.#answers_page.value = {
+                qid   : 0,
+                qnb,
+                filter: []
+            }
         });
 
-        const filter = document.querySelector('#filter .students')!;
-        let options = [];
-        for(let student in rendus.data) {
-            const line = document.createElement('div');
-            const check = document.createElement("input");
-            (check as any).student = student;
-            check.setAttribute("type", "checkbox");
-            check.checked = true;
-            line.append(check, student);
-            options.push(line);
+        this.#answers_page.listen( () => {
+            this.#updatePage();
+        });
+    }
+
+    #initGUI() {
+
+        // import-export
+        document.querySelector('#export_answers')!.addEventListener('click', () => {
+            this.#data.export();
+        });
+        document.querySelector('#import_answers')!.addEventListener('click', () => {
+            this.#data.import();
+        });
+
+        //TODO: sujet -> in zip...
+        const iframe = document.querySelector('iframe')!;
+
+        function setSujet(url: string) {
+            iframe.src = url;
+
+            localStorage.setItem("TPEngine.sujet", url);
         }
-        
-        filter.replaceChildren(...options);
-        this.#filter = Object.keys(rendus.data);
+        document.querySelector('#load_subject')!.addEventListener('click', () => {
 
-        this.current_question = 0; // force update
-        
-        this.#on_changes();
+            const url = prompt("Enter subject URL", "/src/sujet.html");
+            if(url === null)
+                return;
+
+            setSujet(url);
+        });
+
+        //TODO: remove URLSearchParams ?
+        const params = new URLSearchParams( window.location.search );
+        if( params.has("sujet") )
+            setSujet(params.get("sujet")! );
+        else if( localStorage.getItem("TPEngine.sujet") !== null )
+            setSujet( localStorage.getItem("TPEngine.sujet")! );
+
+        // prev/next
+        document.querySelector('#q_prev')!.addEventListener("click", () => {
+            
+            let page = this.#answers_page.value!;
+            if( page.qid > 0 )
+                this.#answers_page.value = {...page, qid: --page.qid};
+        });
+
+        document.querySelector('#q_next')!.addEventListener("click", () => {
+            
+            let page = this.#answers_page.value!;
+            if( page.qid + 1 < page.qnb )
+                this.#answers_page.value = {...page, qid: ++page.qid};
+        });
+
+        // filter
+        const updateFilter = () => {
+            const filter = [...document.querySelectorAll<HTMLInputElement>("#filter .students input")]
+                    .filter(e => ! e.checked)
+                    .map( e => (e as any).student);
+
+            this.#answers_page.value = {...this.#answers_page.value!, filter};
+        }
+
+        const checkAll = document.querySelector<HTMLInputElement>("#filter > div > input")!;
+        checkAll!.addEventListener('click', () => {
+            for(let elem of document.querySelectorAll<HTMLInputElement>("#filter .students input") )
+                elem.checked = checkAll.checked;
+
+            updateFilter();
+        });
+
+        document.querySelector("#filter .students")!.addEventListener("click", (ev) => {
+            const target = ev.target! as HTMLElement;
+            if(target.tagName !== "INPUT")
+                return;
+
+            updateFilter();
+        });
     }
 
-    #updateCorr( rendus: StudentRendu[], q_id: number, callback: (a: Question) => void ) {
+    #updatePage() {
 
-        for(let rendu of rendus)
-            callback( rendu.rendu.answers[q_id] );
+        const { qnb, qid, filter } = this.#answers_page.value!;
 
-        this.#on_changes();
-    }
+        qnb_html.textContent = `${qnb}`;
+        qid_html.textContent = `${qid+1}`;
 
-    async #on_changes() {
-
-        const filename = this.#rendus!.filename;
-        const content  = buffer2str( await this.#rendus!.toArrayBuffer() );
-    
-        localStorage.setItem("sav", JSON.stringify({content, filename}) );
-    }
-
-    prev_question() {
-
-        if(this.#cur_q <= 0)
+        if(this.#data.content.value === null)
             return;
-    
-        --this.current_question; // force update
-    }
-    next_question() {
-
-        if( this.#rendus === null || this.#cur_q + 1 >= this.#rendus.nbQuestions)
-            return;
-    
-        ++this.current_question; // force update
-    }
-
-    get current_question() {
-        return this.#cur_q;
-    }
-
-    #filter: string[] = [];
-    set filter(f: string[]) {
-        this.#filter = f;
-        this.current_question = this.current_question; // force update...
-    }
-
-    getAnswers(id: number) {
-        return Object.entries(this.#rendus!.data)
-                    .filter( ([k,v]) => this.#filter.includes(k) )
-                    .map( ([k,v]) => v.rendu.answers[id] );
-    }
-    
-    set current_question(cur_q: number) {
-
-        this.#cur_q = cur_q;
-        qid_html.textContent = `${cur_q+1}`;
 
         // highlight question in subject...
         try {
-            iframe.contentWindow?.postMessage({type: "highlight", value: cur_q}, "*");
+            iframe.contentWindow?.postMessage({type: "highlight", value: qid}, "*");
         } catch(e) {
             console.warn(e);
         }
 
-        console.warn( this.#rendus!.data);
-        console.warn( this.getAnswers(cur_q) );
+        console.warn("HERE");
 
-        RText.print(answers_html, this.getAnswers(cur_q) )
+        RText.print(answers_html, this.getAnswers<any>(qid), () => {
+            // force update/save (?)
+            console.warn("force save");
+            this.#data.content.value = {...this.#data.content.value!};
+        });
+    }
 
-        return;
+    /**/
+
+    getAnswers<T>(id: number) {
+
+        const filter = this.#answers_page.value!.filter;
+
+        return this.#data.content.value!.rendus
+                    .filter( (rendu) => ! filter.includes(rendu.student_id) )
+                    .map   ( (rendu) => rendu.answers[id] ) as Answer<T>[];
+    }
+    
+    //TODO: remove -> use listen...
+    /*
+    set current_question(cur_q: number) {
 
         //TODO...
-
-        let answers: Record<string, StudentRendu[]> = {};
-        for( let rendu of Object.values(this.#rendus!.data) )
-            (answers[rendu.rendu.getAnswer(cur_q).text] ??= []).push( rendu );
-        
-        let sortedAnswers = Object.entries(answers).sort( (a,b) => a[0].localeCompare(b[0]) );
 
         const answerlist_html = sortedAnswers.map( ([answer, rendus]) => {
 
@@ -161,42 +223,26 @@ export default class AnswersBrowser {
     
             let comment = ans.comments ?? "";
     
-            // build
-            // TODO: answer builder depending on type....
-            const answer_html = str2html( //TODO: use LISS...
-    `<div class="answer${ answer_status }${sus_status}">
-        <div class="opts"><span class="ok">[O]</span><span class="nok">[X]</span><span class="sus">[S]</span><br/>(${ rendus.length })</div>
-        <div class="field">
-            <div class="text"></div>
-            <input class="comment" value="${comment}" />
-        </div>
-    </div>`);
-
-            const answer_text = answer_html.querySelector('.text')!;
-            answer_text.textContent = answer;
-
-            // events...
-
             // not optimal but osef
             answer_html.querySelector(".opts > .ok")!.addEventListener('click', () => {
                 answer_html.classList.add('correct');
                 answer_html.classList.remove('wrong');
     
-                this.#updateCorr( rendus, cur_q, (a) => { a.grade = 1; } )
+                //this.#updateCorr( rendus, cur_q, (a) => { a.grade = 1; } )
             });
             answer_html.querySelector(".opts > .nok")!.addEventListener('click', () => {
                 answer_html.classList.add('wrong');
                 answer_html.classList.remove('correct');
     
-                this.#updateCorr( rendus, cur_q, (a) => { a.grade = 0; } );
+                //this.#updateCorr( rendus, cur_q, (a) => { a.grade = 0; } );
             });
             answer_html.querySelector(".opts > .sus")!.addEventListener('click', () => {
                 const sus = answer_html.classList.toggle('suspicious');
-                this.#updateCorr( rendus, cur_q, (a) => { a.suspicious = sus; } );
+                //this.#updateCorr( rendus, cur_q, (a) => { a.suspicious = sus; } );
             });
             const comment_html = answer_html.querySelector<HTMLInputElement>(".comment")!;
             comment_html.addEventListener('input', () => {
-                this.#updateCorr( rendus, cur_q, (a) => { a.comments = comment_html.value; } );
+                //this.#updateCorr( rendus, cur_q, (a) => { a.comments = comment_html.value; } );
             });
     
             return answer_html;
@@ -204,6 +250,11 @@ export default class AnswersBrowser {
         });
 
         answers_html?.replaceChildren(...answerlist_html);
-    }
+    }*/
 
 }
+
+// ensure the DOM is ready before searching for questions
+await whenDOMContentLoaded();
+
+export default new AnswersBrowser();

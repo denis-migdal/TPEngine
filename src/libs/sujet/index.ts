@@ -1,1 +1,1 @@
-import "@TPEngine/toolbar";
+import "@TPEngine/TPPage";

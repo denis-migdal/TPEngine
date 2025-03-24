@@ -10,7 +10,10 @@ export async function upload(accept=".*") {
         resolve(null);
     });
     file_upload.addEventListener('change', () => {
-        resolve(file_upload.files![0]);
+        let value = null;
+        if( file_upload.files?.[0] !== undefined )
+            value = file_upload.files![0];
+        resolve(value);
     });
 
     file_upload.click();

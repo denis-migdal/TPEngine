@@ -12,7 +12,17 @@
 TODO: Signal -> default value (static prop?)
   + setProperties() => sub from signal...
 
-0. écrire les sujets (sinon pas le temps...)
+0. Refactors
+  -> :not(:defined) -> invisible...
+  -> TPPage/AnswersBrowser -> in skeleton/libs/pages TS
+
+  -> redos rendus
+    -> sync ??? -> save current q in datas
+    -> éviter de tout recréer ??? (mais qd même update...)
+      -> signal de update ??? (callback) -> explicit call to local save...
+1. Use sujet for meta infos... (better)
+  -> add URL to zip (?)
+
 1. modify questions upon changes.
   a. grade => set color (0 à 1)
   b. comment

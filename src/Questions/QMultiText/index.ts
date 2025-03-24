@@ -1,11 +1,11 @@
 import LISS from "@LISS/libs/LISS";
 
 const html = require('!!raw-loader!./index.html').default;
-
+import {css as answer_css} from "../QText/";
+import { Answer } from "@TPEngine/structs/Answers";
 export const css  = require('!!raw-loader!./index.css' ).default;
-import {css as answer_css, buildEmptyQuestion} from "../QText/";
 
-class QMultiText extends LISS({html, css:[answer_css, css]})<string[]> {
+class QMultiText extends LISS({html, css:[answer_css, css]})<Answer<string[]>> {
 
     constructor() {
         super();
@@ -29,42 +29,25 @@ class QMultiText extends LISS({html, css:[answer_css, css]})<string[]> {
             answers.append( item, field );
         }
 
-        if(this.signal.value === null)
-            this.signal.value = buildEmptyQuestion<string[]>();
-        
-        const invite = this.host.textContent!;
-        //this.content.querySelector(".invite")!.textContent = invite;
-
-        this.signal.value.meta = {
-            invite,
-            type: "QMultiText"
-        }
-
-        this.#update = true;
-        this.signal.listen( () => {
-            if(this.#update)
-                this.#updateFromSignal();
-        });        
+        this.signal.listen( () => { this.#updateFromSignal(); });        
     }
-
-    #update = false;
 
     #updateFromSignal() {
         const fields = [...this.content.querySelectorAll('[contenteditable]')];
 
-        for(let i = 0; i < fields.length; ++i)
-            fields[i].innerHTML = this.signal.value!.answer?.value?.[i] ?? "";
+        for(let i = 0; i < fields.length; ++i) {
+            const value = this.signal.value?.answer?.[i] ?? "";
+
+            if( value !== fields[i].innerHTML )
+                fields[i].innerHTML = value;
+        }
     }
 
     #updateFromFields() {
 
-        this.#update = false;
-
-        const value = structuredClone(this.signal.value)!;
-        value.answer!.value = [...this.content.querySelectorAll('[contenteditable]')].map( e => e.innerHTML );
-        this.signal.value = value;
-
-        this.#update = true;
+        this.signal.value = {
+            answer: [...this.content.querySelectorAll('[contenteditable]')].map( e => e.innerHTML ),
+        }
     }
 }
 
