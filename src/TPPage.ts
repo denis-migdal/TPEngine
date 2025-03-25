@@ -6,15 +6,15 @@ import { getSignal } from "@LISS/src/LISSClasses/LISSValue";
 import FileManager, { FileManagerOpts } from "./structs/FileManager";
 import { Answer, Answers, AnswersConv } from "./structs/Answers";
 
-/*
-if( p.has('ds') ) {
+const p = new URLSearchParams(location.search);
 
-    let place = p.get('place');
-    if( place === null ) {
-        place = prompt('Entrez votre n° de place (e.g. S15-1A)')!.toUpperCase();
-        history.pushState({}, "", `${location.search}&place=${place}`);
-    }
-}*/
+let place = p.get('place');
+let ds_id = p.get('ds');
+
+if( ds_id !== null && place === null ) {
+    place = prompt('Entrez votre n° de place (e.g. S15-1A)')!.toUpperCase();
+    history.pushState({}, "", `${location.search}&place=${place}`);
+}
 
 class TPPage implements FileManagerOpts<Answers> {
 
@@ -23,10 +23,6 @@ class TPPage implements FileManagerOpts<Answers> {
     readonly localStorage_name = location.pathname;
 
     get export_filename() {
-
-        //TODO...
-        const place = "1A";
-        const ds_id = "00";
 
         // else...
         // location.pathname.slice(1,-1).replaceAll("/", "_") + ".answers";
@@ -61,12 +57,12 @@ class TPPage implements FileManagerOpts<Answers> {
 
     #updateAnswerFromField(id: number) {
 
-        const value = this.#data.content.value;
+        let value = this.#data.content.value;
 
-        if( value === null) {
+        if( value === null ) {
             if( this.#fields[id].value !== null)
-                console.warn("???")
-            return;
+                return;
+            value = this.#data.content.value = new Array(this.#fields.length);
         }
 
         // force update

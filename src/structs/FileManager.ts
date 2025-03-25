@@ -23,6 +23,7 @@ type File<T> = {
 export default class FileManager<T> extends Signal<File<T>> {
 
     #opts: FileManagerOpts<T>;
+    #content: Signal<T>;
 
     constructor(opts: FileManagerOpts<T>) {
         super({
@@ -31,10 +32,10 @@ export default class FileManager<T> extends Signal<File<T>> {
         });
 
         this.#opts = opts;
+        this.#content = this.value!.content; // can't be null...
 
         // Auto-save to localStorage...
         this.content.listen( () => {
-            console.warn("save", this.#opts.localStorage_name);
             this.saveToLocalStorage(this.#opts.localStorage_name)
         });
 
@@ -42,7 +43,7 @@ export default class FileManager<T> extends Signal<File<T>> {
     }
 
     get content() {
-        return this.value!.content;
+        return this.#content; // même si value est null, reste ok.
     }
 
     async export() {
