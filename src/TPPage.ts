@@ -104,6 +104,17 @@ class TPPage implements FileManagerOpts<Answers> {
 
             if( e.data.type === "corrige" ) {
                 this.#data.loadFromBuffer( e.data.value, null );
+
+                // replies with q types...
+                window.parent.postMessage({
+                    type: "questions",
+                    value: this.#elems.map( e => {
+                        return {
+                            type: e.tagName.toLocaleUpperCase().slice(2)
+                        }
+                    }
+                )},"*");
+
                 return;
             }
             if( e.data.type === "highlight" ) {

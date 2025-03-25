@@ -1,4 +1,5 @@
 import LISS from "@LISS/libs/LISS";
+import { setAnswerColor } from "@TPEngine/Questions/QText";
 import { Answer } from "@TPEngine/structs/Answers";
 
 const html = require('!!raw-loader!./index.html').default;
@@ -11,24 +12,39 @@ export class RText extends LISS({html, style:css, css})<never> {
         super();
 
         const span_nb = this.content.querySelector('.nb')!;
-        const answer  = this.content.querySelector('.text')!;
+        const answer  = this.content.querySelector<HTMLElement>('.answer')!;
 
         span_nb.textContent = `${questions.length}`;
         answer.innerHTML    = questions[0].answer!;
 
-        const grade = this.content.querySelector<HTMLInputElement>(".grade")!;
-        if( questions[0].grade !== undefined)
-            grade.value = `${questions[0].grade!}`;
+        const grade_html = this.content.querySelector<HTMLInputElement>(".grade")!;
+        const grade = questions[0].grade
+        if( grade !== undefined) {
+            grade_html.value = `${grade}`;
 
-        grade.addEventListener('input', () => {
+            setAnswerColor(answer, grade);
+        }
+
+        grade_html.addEventListener('input', () => {
+            const grade = +grade_html.value;
             for(let i = 0; i < questions.length; ++i) {
-                console.warn(grade.value, typeof grade.value, +grade.value);
-                questions[i]!.grade = +grade.value;
+                questions[i]!.grade = grade;
             }
+
+            setAnswerColor(answer, grade);
             
             callback();
         });
-        //TODO...
+
+        const comment_html = this.content.querySelector<HTMLInputElement>(".comment")!;
+        if( questions[0].comment !== undefined)
+            comment_html.value = `${questions[0].comment!}`;
+        comment_html.addEventListener('input', () => {
+            for(let i = 0; i < questions.length; ++i)
+                questions[i]!.comment = comment_html.value;
+            
+            callback();
+        });
     }
 
     static print(target: HTMLElement, questions: Answer<string>[], callback: () => void ) {

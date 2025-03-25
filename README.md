@@ -13,16 +13,13 @@
   -> :not(:defined) -> invisible...
   -> TPPage/AnswersBrowser -> move to skeleton/libs/pages TS
 
-1. modify questions upon changes.
-  a. grade => set color (0 à 1)
-  b. comment
-  c. suspicious set flag
-2. MultiRep...
-  - Use sujet for meta infos... (better)
+1. Merge & Sort
+2. Get type from subject...
+4. Multi
 3. Import/export + test import corrigé.
-
-X. group & sort answers...
 X. Coeff export CSV (meta from sujet)
+
+X suspicious set flag
 X. Update LISS
 
 X. docs

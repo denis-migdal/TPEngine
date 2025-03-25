@@ -85,7 +85,17 @@ export class AnswersBrowser implements FileManagerOpts<Rendus> {
         });
     }
 
+    #questions: {type: string}[] = [];
+
     #initGUI() {
+
+        addEventListener('message', ev => {
+            if(typeof ev.data === "string")
+                return;
+
+            if(ev.data.type === "questions")
+                this.#questions = ev.data.value;
+        })
 
         // import-export
         document.querySelector('#export_answers')!.addEventListener('click', () => {
@@ -152,6 +162,8 @@ export class AnswersBrowser implements FileManagerOpts<Rendus> {
         } catch(e) {
             console.warn(e);
         }
+
+        console.warn(this.#questions, qid);
 
         RText.print(answers_html, this.getAnswers<any>(qid), () => {
             // force update/save...
