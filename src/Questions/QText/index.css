@@ -5,6 +5,10 @@
 }
 
 :host {
+    & .grade {
+        font-weight: bold;
+    }
+
     & .answer {
         white-space: pre-wrap;
 
@@ -14,26 +18,24 @@
         padding-left : 8px;
         padding-right: 8px;
         
-        &.correct {
-            border: 4px solid green;
-        }
-        &.minor {
-            border: 4px solid yellow;
-        }
-        &.wrong {
-            border: 4px solid orange;
-        }
-        &.zero {
+        &[grade="0"] {
             border: 4px solid red;
         }
-        
-        &[comments]::after {
-            content: attr(comments); /* todo */
-            color: orange;
-            font-style: italic;
-            padding-top: 10px;
-            margin-top: 10px;
-            display: block;
+        &[grade="<=.5"] {
+            border: 4px solid orange;
         }
+        &[grade=">.5"] {
+            border: 4px solid yellow;
+        }
+        &[grade="1"] {
+            border: 4px solid green;
+        }
+    }
+
+    & [comment]::after {
+        content: attr(comment); /* todo */
+        color: orange;
+        font-style: italic;
+        display: block;
     }
 }

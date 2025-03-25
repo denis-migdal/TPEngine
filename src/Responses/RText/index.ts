@@ -21,8 +21,10 @@ export class RText extends LISS({html, style:css, css})<never> {
             grade.value = `${questions[0].grade!}`;
 
         grade.addEventListener('input', () => {
-            for(let i = 0; i < questions.length; ++i)
+            for(let i = 0; i < questions.length; ++i) {
+                console.warn(grade.value, typeof grade.value, +grade.value);
                 questions[i]!.grade = +grade.value;
+            }
             
             callback();
         });

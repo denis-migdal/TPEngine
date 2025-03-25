@@ -9,6 +9,7 @@ type Rendu = {
 };
 
 export type Rendus = {
+    sujet_url: string,
     corrige: Answers,
     rendus : Rendu[];
 }
@@ -17,6 +18,8 @@ export type Rendus = {
 export async function Rendus2Buffer(data: Rendus) {
 
     const zip = new JSZip();
+
+    zip.file("sujet.url", data.sujet_url );
 
     zip.file("corrige.answers", await Answers2Buffer(data.corrige) );
 
@@ -32,11 +35,20 @@ async function Buffer2Rendus(content: ArrayBuffer) {
     await zip.loadAsync(content);
 
     const data: Rendus = {
+        sujet_url: "",
         corrige: [],
         rendus : []
     };
     
     for(let filename in zip.files) {
+
+        console.warn(filename);
+
+        if(filename === "sujet.url") {
+            data.sujet_url = (await zip.file(filename).async("string")).trim();
+            console.warn("found", data.sujet_url);
+            continue;
+        }
 
         const answers = await Buffer2Answers(await zip.file(filename).async("arraybuffer") );
 
@@ -48,7 +60,7 @@ async function Buffer2Rendus(content: ArrayBuffer) {
         console.warn(filename);
 
         // TODO: from Moodle + verif RNG/IP.
-        const student_id = filename.split('_')[2].slice(0,8);
+        const student_id = filename.split('_')[2].slice(0,-8);
 
         data.rendus.push({
             filename,

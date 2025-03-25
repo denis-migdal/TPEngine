@@ -7,37 +7,6 @@ body {
 
     display: flex;
 
-    #filter > div {
-        position: absolute;
-        background-color: light-dark(white, black);
-        border: 1px solid gray;
-
-        & .students {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-        }
-    }
-    #filter:not(:hover) > div {
-        display: none;
-    }
-
-    /* TODO... */
-    .correct {
-        background-color: lightgreen;
-    }
-    .wrong {
-        background-color: #FFCCCB;
-    }
-
-    input {
-        background-color: transparent;
-    }
-
-    & > iframe {
-        border: none;
-        border-right: 1px solid black;
-    }
-
     & > * {
         flex: 1 1 0px;
     }
@@ -49,32 +18,31 @@ body {
         height: 100vh;
     }
 
-    .question {
-        border-bottom: 1px solid black;
-        border-top: 1px solid black;
-    }
-
     #answers {
         flex: 1 1 0px;
         overflow-y: auto;
     }
 
-    .answer {
-        display:flex;
-        gap: 10px;
+    & > iframe {
+        border: none;
+        border-right: 1px solid black;
+    }
 
-        & > .opts {
-            flex-grow: 0;
-            flex-shrink: 0;
+    #filter {
+
+        &:not(:hover) > div {
+            display: none;
         }
 
-        & .text {
-            min-height: 1.2rem;
-            white-space: pre;
-        }
+        & > div {
+            position: absolute;
+            background-color: light-dark(white, black);
+            border: 1px solid gray;
 
-        &.suspicious .sus {
-            background-color: orange;
+            & .students {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+            }
         }
     }
 }

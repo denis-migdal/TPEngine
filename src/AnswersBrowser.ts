@@ -53,7 +53,7 @@ export class AnswersBrowser implements FileManagerOpts<Rendus> {
             if(value === null)
                 return; // dunno what to do...
 
-            //TODO: update sujet too...
+            iframe.src = value.sujet_url;
 
             const buffer = await Answers2Buffer(value.corrige);
             iframe.contentWindow!.postMessage({ type: "corrige", value: buffer }, "*");
@@ -94,30 +94,6 @@ export class AnswersBrowser implements FileManagerOpts<Rendus> {
         document.querySelector('#import_answers')!.addEventListener('click', () => {
             this.#data.import();
         });
-
-        //TODO: sujet -> in zip...
-        const iframe = document.querySelector('iframe')!;
-
-        function setSujet(url: string) {
-            iframe.src = url;
-
-            localStorage.setItem("TPEngine.sujet", url);
-        }
-        document.querySelector('#load_subject')!.addEventListener('click', () => {
-
-            const url = prompt("Enter subject URL", "/src/sujet.html");
-            if(url === null)
-                return;
-
-            setSujet(url);
-        });
-
-        //TODO: remove URLSearchParams ?
-        const params = new URLSearchParams( window.location.search );
-        if( params.has("sujet") )
-            setSujet(params.get("sujet")! );
-        else if( localStorage.getItem("TPEngine.sujet") !== null )
-            setSujet( localStorage.getItem("TPEngine.sujet")! );
 
         // prev/next
         document.querySelector('#q_prev')!.addEventListener("click", () => {
@@ -177,11 +153,8 @@ export class AnswersBrowser implements FileManagerOpts<Rendus> {
             console.warn(e);
         }
 
-        console.warn("HERE");
-
         RText.print(answers_html, this.getAnswers<any>(qid), () => {
-            // force update/save (?)
-            console.warn("force save");
+            // force update/save...
             this.#data.content.value = {...this.#data.content.value!};
         });
     }
