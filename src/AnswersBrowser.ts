@@ -17,11 +17,12 @@ const qnb_html     = document.querySelector('#q_nb')!;
 type AnswersPage = {
     qid   : number,
     qnb   : number,
-    filter: string[]
-    // ?
-    //TODO answers (?) - ou outside (?)
+    filter: string[],
+    questions: Questions
 };
 
+
+type Questions = {type: string}[];
 
 export class AnswersBrowser implements FileManagerOpts<Rendus> {
 
@@ -40,7 +41,10 @@ export class AnswersBrowser implements FileManagerOpts<Rendus> {
         qid   : 0,
         qnb   : 0,
         filter: [],
+        questions: []
     });
+
+    #promise!: ReturnType<typeof Promise.withResolvers<Questions>>;
 
     constructor() {
 
@@ -52,11 +56,6 @@ export class AnswersBrowser implements FileManagerOpts<Rendus> {
             const value = this.#data.content.value;
             if(value === null)
                 return; // dunno what to do...
-
-            iframe.src = value.sujet_url;
-
-            const buffer = await Answers2Buffer(value.corrige);
-            iframe.contentWindow!.postMessage({ type: "corrige", value: buffer }, "*");
 
             const filter = document.querySelector('#filter .students')!;
             let options = [];
@@ -72,11 +71,20 @@ export class AnswersBrowser implements FileManagerOpts<Rendus> {
             
             filter.replaceChildren(...options);
 
+            iframe.src = value.sujet_url;
+
+            const buffer = await Answers2Buffer(value.corrige);
+            this.#promise = Promise.withResolvers<{type: string}[]>();
+
+            console.warn("sent");
+            iframe.contentWindow!.postMessage({ type: "corrige", value: buffer }, "*");
+
             const qnb = value.corrige.length;
             this.#answers_page.value = {
                 qid   : 0,
                 qnb,
-                filter: []
+                filter: [],
+                questions: await this.#promise.promise
             }
         });
 
@@ -85,16 +93,19 @@ export class AnswersBrowser implements FileManagerOpts<Rendus> {
         });
     }
 
-    #questions: {type: string}[] = [];
-
     #initGUI() {
 
         addEventListener('message', ev => {
+
+            console.warn('message', ev.data);
+
             if(typeof ev.data === "string")
                 return;
 
+            console.warn("!", ev.data);
+
             if(ev.data.type === "questions")
-                this.#questions = ev.data.value;
+                this.#promise.resolve(ev.data.value);
         })
 
         // import-export
@@ -148,7 +159,7 @@ export class AnswersBrowser implements FileManagerOpts<Rendus> {
 
     #updatePage() {
 
-        const { qnb, qid, filter } = this.#answers_page.value!;
+        const { qnb, qid, filter, questions } = this.#answers_page.value!;
 
         qnb_html.textContent = `${qnb}`;
         qid_html.textContent = `${qid+1}`;
@@ -163,7 +174,7 @@ export class AnswersBrowser implements FileManagerOpts<Rendus> {
             console.warn(e);
         }
 
-        console.warn(this.#questions, qid);
+        console.warn(questions, qid);
 
         RText.print(answers_html, this.getAnswers<any>(qid), () => {
             // force update/save...
