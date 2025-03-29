@@ -3,10 +3,9 @@ import { setAnswerColor } from "@TPEngine/Questions/QText";
 import { Answer } from "@TPEngine/structs/Answers";
 
 const html = require('!!raw-loader!./index.html').default;
-const css  = require('!!raw-loader!./index.css' ).default;
+export const css  = require('!!raw-loader!./index.css' ).default;
 
-//TODO: + set of thingy...
-export class RText extends LISS({html, style:css, css})<never> {
+export default class RText extends LISS({html, css})<never> {
 
     constructor(questions: Answer<string>[], callback: () => void) {
         super();

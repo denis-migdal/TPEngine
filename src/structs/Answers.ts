@@ -21,7 +21,11 @@ export async function Buffer2Answers(content: ArrayBuffer) {
     const zip = new JSZip();
     await zip.loadAsync(content);
 
-    return JSON.parse( await zip.file("answers").async("string") ) as Answers;
+    const file = zip.file("answers");
+
+    console.warn(file.date);
+
+    return JSON.parse( await file.async("string") ) as Answers;
 }
 
 export const AnswersConv = {

@@ -42,11 +42,8 @@ async function Buffer2Rendus(content: ArrayBuffer) {
     
     for(let filename in zip.files) {
 
-        console.warn(filename);
-
         if(filename === "sujet.url") {
             data.sujet_url = (await zip.file(filename).async("string")).trim();
-            console.warn("found", data.sujet_url);
             continue;
         }
 
@@ -56,8 +53,6 @@ async function Buffer2Rendus(content: ArrayBuffer) {
             data.corrige = answers;
             continue;
         }
-
-        console.warn(filename);
 
         // TODO: from Moodle + verif RNG/IP.
         const student_id = filename.split('_')[2].slice(0,-8);

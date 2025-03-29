@@ -5,7 +5,7 @@ import {css as answer_css, setAnswerColor, setComment, setGlobalGrade} from "../
 import { Answer } from "@TPEngine/structs/Answers";
 export const css  = require('!!raw-loader!./index.css' ).default;
 
-type MultiTextAnswer = Answer<string[]> & { grades?: number[] };
+export type MultiTextAnswer = Answer<string[]> & { grades?: number[] };
 
 class QMultiText extends LISS({html, css:[answer_css, css]})<MultiTextAnswer> {
 

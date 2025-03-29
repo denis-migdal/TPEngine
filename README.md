@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>[PROJECT TITLE]</h1>
+  <h1>TPEngine</h1>
 
   <p>[Project description</p>
 </div>
@@ -9,42 +9,22 @@
 - `npm run build`
 - `npm run watch`
 
-0. Refactors
-  -> :not(:defined) -> invisible...
-  -> TPPage/AnswersBrowser -> move to skeleton/libs/pages TS
-
-1. Merge & Sort
-2. Get type from subject...
-4. Multi
-3. Import/export + test import corrigé.
-X. Coeff export CSV (meta from sujet)
-
-X suspicious set flag
-X. Update LISS
-
-X. docs
-
-## ?
-
-- Correcteur : question type
-	+ verify result
-	+ désigner équiv (sans espaces répétés ? + casse) ?
-	+ prev good/bad + see previous ? [per answers]
-	+ calculer taux similarités 2à2 (garder max) + % suspicieux + nom similaire.
-
 ## TODO
 
-- bug avec ctrl+Z ?
+- test export/import.
+- merge & sort
 
-- Moodle ID to Odin ID conversion...
+- CodeBlock : use innerText...
+- Update LISS
+- docs (?)
+
+- CSV export (to upload to Odin) [use coeff to compute final grade]
+  - Moodle ID to Odin ID conversion...
+
+- use :not(:defined) { visibility: hidden } to hide non upgraded elements.
+- move TPPage/AnswersBrowser to skeleton/libs/pages TS
+- suspicious set flag
 
 - verif identical zip.
-
-- auto-correct if equals to corrige...
-  -> spaces/break-lines/casse.
-- distance entre rendus.
-
-- Questions types :
-  - Images/Files
-  - exec code in Browser (JS/Py/HTML/CSS/Shell/SQL)
-  - Tableur (PDF export ?)
+- if answer is equal to corrige : set grade 1 / if empty set grade 0...
+- calculs de similarités entre copies ?

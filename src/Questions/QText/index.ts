@@ -25,7 +25,8 @@ export function setGlobalGrade(target: HTMLElement, answer: Answer|null, pts: (g
 }
 
 export function setAnswerColor(target: HTMLElement, grade: number|undefined) {
-    if( grade === undefined) {
+
+    if( grade == undefined) {
         target.removeAttribute('grade');
     } else if(grade === 0) {
         target.setAttribute('grade', "0");

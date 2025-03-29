@@ -1,10 +1,14 @@
 import "@TPEngine/Responses/RText";
-import { RText } from "@TPEngine/Responses/RText";
 import Signal from "@LISS/src/signals/Signal";
 import { Rendus, RendusConv } from "./structs/Rendus";
 import FileManager, { FileManagerOpts } from "./structs/FileManager";
 import whenDOMContentLoaded from "@LISS/src/utils/DOM/whenDOMContentLoaded";
 import { Answer, Answers2Buffer } from "./structs/Answers";
+
+const Responses = {
+    "text"     : (await require("./Responses/RText/"     )).default,
+    "multitext": (await require("./Responses/RMultiText/")).default
+}
 
 //TODO: in init GUI...
 const iframe = document.querySelector('iframe')!
@@ -71,13 +75,15 @@ export class AnswersBrowser implements FileManagerOpts<Rendus> {
             
             filter.replaceChildren(...options);
 
-            iframe.src = value.sujet_url;
-
             const buffer = await Answers2Buffer(value.corrige);
             this.#promise = Promise.withResolvers<{type: string}[]>();
 
-            console.warn("sent");
-            iframe.contentWindow!.postMessage({ type: "corrige", value: buffer }, "*");
+            iframe.addEventListener("load", () => {
+                console.warn("sent");
+                iframe.contentWindow!.postMessage({ type: "corrige", value: buffer }, "*");
+            }, {once: true});
+            iframe.src = value.sujet_url;
+            
 
             const qnb = value.corrige.length;
             this.#answers_page.value = {
@@ -86,6 +92,8 @@ export class AnswersBrowser implements FileManagerOpts<Rendus> {
                 filter: [],
                 questions: await this.#promise.promise
             }
+
+            console.warn("received");
         });
 
         this.#answers_page.listen( () => {
@@ -97,12 +105,8 @@ export class AnswersBrowser implements FileManagerOpts<Rendus> {
 
         addEventListener('message', ev => {
 
-            console.warn('message', ev.data);
-
             if(typeof ev.data === "string")
                 return;
-
-            console.warn("!", ev.data);
 
             if(ev.data.type === "questions")
                 this.#promise.resolve(ev.data.value);
@@ -174,10 +178,12 @@ export class AnswersBrowser implements FileManagerOpts<Rendus> {
             console.warn(e);
         }
 
-        console.warn(questions, qid);
+        const Response = Responses[ questions[qid].type.toLowerCase() as keyof typeof Responses ];
 
-        RText.print(answers_html, this.getAnswers<any>(qid), () => {
-            // force update/save...
+        console.warn(Responses, questions[qid].type.toLowerCase() );
+
+        Response.print(answers_html, this.getAnswers<any>(qid), () => {
+            // forces update/save...
             this.#data.content.value = {...this.#data.content.value!};
         });
     }
