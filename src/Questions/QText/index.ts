@@ -20,8 +20,16 @@ export function setComment(target: HTMLElement, answer: Answer|null) {
         target.setAttribute("comment", comment);
 }
 
-export function setGlobalGrade(target: HTMLElement, answer: Answer|null, pts: (grade: number) => number) {
-    target.textContent = get(answer, "grade", val => pts(val) );
+export function setGlobalGrade(target: HTMLElement, answer: Answer|null, max: number, pts: (grade: number) => number) {
+
+    if( max === 0)
+        return;
+
+    const score = get(answer, "grade", val => pts(val) );
+
+    console.warn(answer, score);
+
+    target.textContent = `[${score}/${max}]`;
 }
 
 export function setAnswerColor(target: HTMLElement, grade: number|undefined) {
@@ -47,16 +55,15 @@ class QText extends LISS({html, style:css, css})<Answer<string>> {
         const input = this.content.querySelector<HTMLInputElement>(".answer")!;
 
         const span_grade = this.content.querySelector<HTMLElement>(".grade")!;
-        const span_pts   = this.content.querySelector<HTMLElement>(".pts")!;
+        //const span_pts   = this.content.querySelector<HTMLElement>(".pts")!;
 
         const pts            = +this.host.getAttribute("pts")!;
-        span_pts.textContent = `${pts}`;
 
         this.signal.listen( () => {
 
             const value = this.signal.value;
 
-            setGlobalGrade(span_grade, value, (grade) => grade*pts);
+            setGlobalGrade(span_grade, value, pts, (grade) => grade*pts);
             setAnswerColor(input, value?.grade);
             setComment(input, value);
 

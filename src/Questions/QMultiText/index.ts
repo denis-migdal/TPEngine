@@ -19,9 +19,6 @@ class QMultiText extends LISS({html, css:[answer_css, css]})<MultiTextAnswer> {
         const nbCols   = +this.host.getAttribute("cols")!;
 
         this.host.style.setProperty("--nb_cols", `${nbCols}`);
-
-        const span_pts   = this.content.querySelector<HTMLElement>(".pts")!;
-        span_pts.textContent = `${this.pts}`;
         
         const answers = this.content.querySelector(".answer_list")!;
         for(let i = 0; i < this.nbFields; ++i) {
@@ -48,7 +45,7 @@ class QMultiText extends LISS({html, css:[answer_css, css]})<MultiTextAnswer> {
         const list       = this.content.querySelector<HTMLElement>('.answer_list')!
         const span_grade = this.content.querySelector<HTMLElement>('.grade')!
 
-        setGlobalGrade(span_grade, value, (grade) => grade * this.pts / this.nbFields);
+        setGlobalGrade(span_grade, value, this.pts, (grade) => grade * this.pts / this.nbFields);
         setComment(list.parentElement!, value);
 
         for(let i = 0; i < this.fields.length; ++i) {
