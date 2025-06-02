@@ -66,7 +66,11 @@ class TPPage implements FileManagerOpts<Answers> {
         }
 
         // force update
-        this.#data.content.value = value.with(id, this.#fields[id].value ?? {});
+        // with not working if out of index.
+        const val = [...value];
+        val[id] = this.#fields[id].value ?? {};
+
+        this.#data.content.value = val;
     }
 
     #initGUI() {

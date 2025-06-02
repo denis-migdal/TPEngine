@@ -84,8 +84,10 @@ export class AnswersBrowser implements FileManagerOpts<Rendus> {
             }, {once: true});
             iframe.src = value.sujet_url;
             
-
             const qnb = value.corrige.length;
+
+            console.error("!", qnb);
+
             this.#answers_page.value = {
                 qid   : 0,
                 qnb,
