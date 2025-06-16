@@ -12,7 +12,7 @@ let place = p.get('place');
 let ds_id = p.get('ds');
 
 if( ds_id !== null && place === null ) {
-    place = prompt('Entrez votre n° de place (e.g. S15-1A)')!.toUpperCase();
+    place = prompt('Entrez votre nom sous la forme "NOM Prénom"')!.toUpperCase();
     history.pushState({}, "", `${location.search}&place=${place}`);
 }
 
