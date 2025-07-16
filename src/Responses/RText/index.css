@@ -7,7 +7,7 @@
 
     & [grade] {
 
-        background-color: color-mix( in srgb, var(--color), transparent 60%);
+        --background: color-mix( in srgb, var(--color), transparent 60%);
 
         &[grade="0"] {
             --color: red;

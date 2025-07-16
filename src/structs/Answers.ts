@@ -1,11 +1,15 @@
 const JSZip = require("jszip");
 import { Converter } from "./FileManager"
 
+export type AnswerMeta = {
+    grade     : number,
+    comment   : string
+    suspicious: boolean,
+}
+
 export type Answer<T extends any = unknown> = {
-    answer    ?: T,
-    grade     ?: number,
-    comment   ?: string
-    suspicious?: boolean,
+    answer?: T,
+    meta  ?: AnswerMeta
 }
 
 export type Answers = Answer[];
@@ -23,7 +27,7 @@ export async function Buffer2Answers(content: ArrayBuffer) {
 
     const file = zip.file("answers");
 
-    console.warn(file.date);
+    //console.warn(file.date);
 
     return JSON.parse( await file.async("string") ) as Answers;
 }

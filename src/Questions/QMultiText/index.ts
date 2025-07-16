@@ -1,71 +1,61 @@
-import LISS from "@LISS/libs/LISS";
+import {InputMerger, LISS, OutputMerger, WithBare, WithContent, WithMeta, WithRWValue, define, getInput, getOutput} from "@LISS/libs/LISS";
+import { Answer, AnswerMeta } from "@TPEngine/structs/Answers";
 
 const html = require('!!raw-loader!./index.html').default;
+const css  = require('!!raw-loader!./index.css' ).default;
+
 import {css as answer_css, setAnswerColor, setComment, setGlobalGrade} from "../QText/";
-import { Answer } from "@TPEngine/structs/Answers";
-export const css  = require('!!raw-loader!./index.css' ).default;
 
-export type MultiTextAnswer = Answer<string[]> & { grades?: number[] };
+export type MultiTextAnswerMeta = AnswerMeta & { grades: number[] };
+export type MultiTextAnswer = Answer<string[]> & {meta?: MultiTextAnswerMeta};
 
-class QMultiText extends LISS({html, css:[answer_css, css]})<MultiTextAnswer> {
+class QMultiText extends LISS({html, css:[answer_css, css]}, WithBare, WithContent, WithRWValue<string[]>, WithMeta<MultiTextAnswerMeta>) {
 
-    readonly pts = +this.host.getAttribute("pts")!;
-    readonly nbFields = +this.host.getAttribute("count")!;
-    readonly fields: HTMLElement[] = [];
+    readonly pts                   = +this.host.getAttribute("pts")!;
+    readonly nbFields              = +this.host.getAttribute("count")!;
+    readonly fields: HTMLElement[];
 
     constructor() {
         super();
 
         const nbCols   = +this.host.getAttribute("cols")!;
-
         this.host.style.setProperty("--nb_cols", `${nbCols}`);
         
         const answers = this.content.querySelector(".answer_list")!;
+        this.fields   = new Array<HTMLElement>(this.nbFields);
+
         for(let i = 0; i < this.nbFields; ++i) {
 
             const item = document.createElement('div');
             item.append(`(${i+1})` );
 
-            const field = document.createElement('div');
-            field.classList.add("answer");
-            field.toggleAttribute("contenteditable", true);
-            field.addEventListener("input", () => this.#updateFromFields() );
+            const field = document.createElement('code-editor');
+            field.classList.add("answer", "compact");
 
-            this.fields.push(field);
+            this.fields[i] = field;
             answers.append( item, field );
         }
 
-        this.signal.listen( () => { this.#updateFromSignal(); });        
-    }
+        const out = new OutputMerger( ...this.fields.map( f => getOutput<string>(f) ) );
+        const inp = new InputMerger( ...this.fields.map( f => getInput<string>(f) ) );
 
-    #updateFromSignal() {
+        this._output.source = out;
+        inp.source          = this._input;
 
-        const value  = this.signal.value;
 
-        const list       = this.content.querySelector<HTMLElement>('.answer_list')!
-        const span_grade = this.content.querySelector<HTMLElement>('.grade')!
+        const span_grade = this.content.querySelector<HTMLElement>('.grade')!;
 
-        setGlobalGrade(span_grade, value, this.pts, (grade) => grade * this.pts / this.nbFields);
-        setComment(list.parentElement!, value);
+        this._meta.listen( () => {
 
-        for(let i = 0; i < this.fields.length; ++i) {
+            const meta = this._meta.value;
 
-            const field = this.fields[i];
+            setGlobalGrade(span_grade, meta, this.pts, (grade) => grade * this.pts / this.nbFields);
+            setComment(answers.parentElement!, meta);
 
-            setAnswerColor(field, value?.grades?.[i]);
-
-            const answer = value?.answer?.[i] ?? "";
-            if( answer !== field.innerHTML )
-                field.innerHTML = answer;
-        }
-    }
-
-    #updateFromFields() {
-
-        this.signal.value = {
-            answer: [...this.content.querySelectorAll('[contenteditable]')].map( e => e.innerHTML ),
-        }
+            for(let i = 0; i < this.fields.length; ++i)
+                setAnswerColor(this.fields[i], meta?.grades[i]);
+        });
     }
 }
 
-LISS.define("q-multitext", QMultiText);
+define("q-multitext", QMultiText);

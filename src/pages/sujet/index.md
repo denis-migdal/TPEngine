@@ -11,7 +11,8 @@
     <body>
         <main>
 
-1. <q-text pts="2">Qu'est-ce qui est jaune et qui attends ?</q-text>
+1. <q-text pts="2" code-lang="ts">Qu'est-ce qui est jaune et qui attends ?</q-text>
+2. <q-text pts="1" code-lang="ts">Qu'est-ce qui est jaune et qui attends ?</q-text>
 2. <q-multitext count="3" pts="3" cols="2">Coucou ?</q-multitext>
 
 </main>

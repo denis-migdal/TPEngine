@@ -2,7 +2,7 @@ const JSZip = require("jszip");
 import { Converter } from "./FileManager"
 import { Answers, Answers2Buffer, Buffer2Answers } from "./Answers";
 
-type Rendu = {
+export type Rendu = {
     student_id: string,
     filename  : string,
     answers   : Answers,

@@ -11,20 +11,18 @@
 
 ## TODO
 
-- test export/import.
-- merge & sort
+- export to moodle
+  - Name -> Moodle ID conversion...
+- export to Odin
+  - Name -> Odin ID conversion...
+  - Compute final grade.
 
-- CodeBlock : use innerText...
-- Update LISS
+- detect cheat
+  - merge & sort
+  - verif identical zip.
+  - if answer is equal to corrige : set grade 1 / if empty set grade 0...
+  - similarity metric ?
+  - suspicious set flag
+
 - docs (?)
-
-- CSV export (to upload to Odin) [use coeff to compute final grade]
-  - Moodle ID to Odin ID conversion...
-
 - use :not(:defined) { visibility: hidden } to hide non upgraded elements.
-- move TPPage/AnswersBrowser to skeleton/libs/pages TS
-- suspicious set flag
-
-- verif identical zip.
-- if answer is equal to corrige : set grade 1 / if empty set grade 0...
-- calculs de similarités entre copies ?

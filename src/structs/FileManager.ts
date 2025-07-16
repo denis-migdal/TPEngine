@@ -2,6 +2,8 @@ import { upload } from "@TPEngine/utils/upload";
 import { buffer2str, str2buffer } from "@TPEngine/utils/buffer";
 import { download } from "@TPEngine/utils/download";
 import Signal from "@LISS/src/signals/Signal";
+import { Output } from "@LISS/src/extensions/WithOutput";
+import { SyncedSignal } from "@LISS/src";
 
 export type Converter<T> = {
     fromBuffer: (buffer: ArrayBuffer) => Promise<T>,
@@ -20,30 +22,31 @@ type File<T> = {
     readonly content : Signal<T>
 }
 
-export default class FileManager<T> extends Signal<File<T>> {
+// content/file : RO ou RW ???
+export default class FileManager<T> {
 
     #opts: FileManagerOpts<T>;
-    #content: Signal<T>;
+    #file    = new Signal<File<T>>();
+    #content = new SyncedSignal<T>();
 
     constructor(opts: FileManagerOpts<T>) {
-        super({
-            filename: null,
-            content : new Signal<T>()
-        });
 
         this.#opts = opts;
-        this.#content = this.value!.content; // can't be null...
 
         // Auto-save to localStorage...
-        this.content.listen( () => {
+        this.file_content.listen( () => {
             this.saveToLocalStorage(this.#opts.localStorage_name)
         });
 
         this.loadFromLocalStorage(this.#opts.localStorage_name);
     }
 
-    get content() {
-        return this.#content; // même si value est null, reste ok.
+    get file(): Output<File<T>> {
+        return this.#file;
+    }
+
+    get file_content(): SyncedSignal<T> {
+        return this.#content;
     }
 
     async export() {
@@ -62,7 +65,7 @@ export default class FileManager<T> extends Signal<File<T>> {
         if(file === null)
             return;
 
-        this.loadFromBuffer( await file.arrayBuffer(), file.name );
+        await this.loadFromBuffer( await file.arrayBuffer(), file.name );
     }
 
     async saveToLocalStorage(name: string) {
@@ -75,25 +78,31 @@ export default class FileManager<T> extends Signal<File<T>> {
     }
     async loadFromLocalStorage(name: string) {
         const data = localStorage.getItem(name);
+
         if( data === null) {
-            this.value = null;
+            this.#file.value = null;
             return;
         }
 
-        this.loadFromBuffer( str2buffer( data ), this.value!.filename );
+        await this.loadFromBuffer( str2buffer( data ), name );
     }
 
 
     async saveToBuffer() {
 
-        const value = this.content.value;
+        const value = this.file_content.value;
         if( value === null)
             return null;
 
         return await this.#opts.converter.toBuffer(value);
     }
     async loadFromBuffer(buffer: ArrayBuffer, filename:string|null) {
-        this.content.value = await this.#opts.converter.fromBuffer( buffer );
-        this.value = {...this.value!, filename};
+
+        const content = new Signal<T>();
+        content.value = await this.#opts.converter.fromBuffer( buffer );
+
+        // sync issue (?)
+        this.#content.source = content;
+        this.#file.value = {content, filename};
     }
 }

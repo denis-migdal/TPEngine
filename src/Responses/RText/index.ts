@@ -1,59 +1,78 @@
-import LISS from "@LISS/libs/LISS";
+import {LISS, WithBare, WithContent, WithOutput, define, getInput} from "@LISS/libs/LISS";
 import { setAnswerColor } from "@TPEngine/Questions/QText";
-import { Answer } from "@TPEngine/structs/Answers";
+import { Answer, AnswerMeta } from "@TPEngine/structs/Answers";
 
-const html = require('!!raw-loader!./index.html').default;
+       const html = require('!!raw-loader!./index.html').default;
 export const css  = require('!!raw-loader!./index.css' ).default;
 
-export default class RText extends LISS({html, css})<never> {
+// input is set at construction, no need for WithMeta/WithInput
+// /!\ use AnswerMeta to ensure answer isn't modified.
+export default class RText extends LISS({html, css},
+        WithBare, WithContent, WithOutput<AnswerMeta>
+) {
 
-    constructor(questions: Answer<string>[], callback: () => void) {
+    readonly answer_html = this.content.querySelector<HTMLElement>     ('.answer' )!;
+    readonly  grade_html = this.content.querySelector<HTMLInputElement>(".grade"  )!;
+    readonly comment_html= this.content.querySelector<HTMLInputElement>(".comment")!;
+
+    constructor(question: Answer<string>, count: number) {
         super();
 
-        const span_nb = this.content.querySelector('.nb')!;
-        const answer  = this.content.querySelector<HTMLElement>('.answer')!;
+        this.content.querySelector('.nb')!.textContent = `${count}`;
+        
+        getInput<string>( this.answer_html ).value = question.answer!;
 
-        span_nb.textContent = `${questions.length}`;
-        answer.innerHTML    = questions[0].answer!;
-
-        const grade_html = this.content.querySelector<HTMLInputElement>(".grade")!;
-        const grade = questions[0].grade
+        // grade
+        const grade = question.meta?.grade
         if( grade !== undefined) {
-            grade_html.value = `${grade}`;
-
-            setAnswerColor(answer, grade);
+            this.grade_html.value = `${grade}`;
+            setAnswerColor(this.answer_html, grade);
         }
 
-        grade_html.addEventListener('input', () => {
-            const grade = +grade_html.value;
-            for(let i = 0; i < questions.length; ++i) {
-                questions[i]!.grade = grade;
-            }
+        this.grade_html.addEventListener('input', () => this.onChange());
 
-            setAnswerColor(answer, grade);
-            
-            callback();
-        });
-
-        const comment_html = this.content.querySelector<HTMLInputElement>(".comment")!;
-        if( questions[0].comment !== undefined)
-            comment_html.value = `${questions[0].comment!}`;
-        comment_html.addEventListener('input', () => {
-            for(let i = 0; i < questions.length; ++i)
-                questions[i]!.comment = comment_html.value;
-            
-            callback();
-        });
+        // comment
+        if( question.meta?.comment !== undefined)
+            this.comment_html.value = `${question.meta.comment!}`;
+        
+        this.comment_html.addEventListener('input', () => this.onChange() );
     }
 
-    static print(target: HTMLElement, questions: Answer<string>[], callback: () => void ) {
+    onChange() {
 
-        //TODO: remove empty is false.
-        //TODO: sort/merge/group...
+        const grade = +this.grade_html.value;
+        setAnswerColor(this.answer_html, grade);
 
-        let x = new Array();
-        for(let i = 0; i < questions.length; ++i)
-            x[i] = new RText([questions[i]], callback);
+        const comment = this.comment_html.value;
+
+        this._output.value = {
+            grade,
+            comment,
+            suspicious: false, //TODO...
+        };
+    }
+
+    // no needs for a signal.
+    static print(target: HTMLElement,
+                 questions: Answer<string>[],
+                 callback: (questions: Answer<string>[]) => void
+                ) {
+
+        //TODO: sort/merge
+
+        let x = new Array<RText>();
+        for(let i = 0; i < questions.length; ++i) {
+            x[i] = new RText(questions[i], 1);
+
+            x[i].output.listen( () => {
+
+                // TODO: unmerge/unsort
+
+                questions = questions.slice();
+                questions[i].meta = x[i].output.value!;
+                callback(questions);
+            });
+        }
 
         target.replaceChildren( ...x );
     }
@@ -67,4 +86,4 @@ export default class RText extends LISS({html, css})<never> {
     let sortedAnswers = Object.entries(answers).sort( (a,b) => a[0].localeCompare(b[0]) );
 */
 
-LISS.define("r-text", RText);
+define("r-text", RText);

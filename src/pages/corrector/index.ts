@@ -1,4 +1,4 @@
-import "@TPEngine/AnswersBrowser";
+import "@TPEngine/TPCorrector";
 
 //TODO:
 /*

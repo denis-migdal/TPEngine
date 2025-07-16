@@ -1,34 +1,64 @@
-import LISS from "@LISS/libs/LISS";
-import { Answer } from "@TPEngine/structs/Answers";
+import {LISS, WithBare, WithContent, WithMeta, WithRWValue, define, getValue} from "@LISS/libs/LISS";
+import { Answer, AnswerMeta } from "@TPEngine/structs/Answers";
 
-const html = require('!!raw-loader!./index.html').default;
-export const css  = require('!!raw-loader!./index.css' ).default;
+const html        = require('!!raw-loader!./index.html').default as string;
+export const css  = require('!!raw-loader!./index.css' ).default as string;
 
-export function get<T extends Record<string,any>, K extends keyof T>(obj: null|T, key: K, transform: (val:Exclude<T[K], undefined>) => any = v => v): string {
-    const value = obj?.[key];
-    if( value === undefined)
-        return "";
-    return `${transform(value)}`;
+class QText extends LISS({html, css}, WithBare, WithContent, WithRWValue<string>, WithMeta<AnswerMeta>) {
+
+    #answer: Signal<string>;
+
+    constructor() {
+        super();
+
+        const pts        = +this.host.getAttribute("pts")!;
+        const input      = this.content.querySelector<HTMLElement>(".answer")!;
+        const span_grade = this.content.querySelector<HTMLElement>(".grade" )!;
+
+        const codeLang   = this.host.getAttribute('code-lang');
+        if( codeLang !== null )
+            input.setAttribute('code-lang', codeLang);
+
+        this.#answer        = getValue<string>(input);
+        this._output.source = this.#answer;
+        this.#answer.source = this._input;
+
+        this._meta.listen( () => {
+
+            const meta = this._meta.value;
+
+            setGlobalGrade(span_grade, meta, pts, (grade) => grade*pts);
+            setAnswerColor(input     , meta?.grade);
+            setComment    (input     , meta);
+
+        });
+    }
 }
 
-export function setComment(target: HTMLElement, answer: Answer|null) {
+import "@LISS/components/code/code-editor";
+import { Signal } from "@LISS/src/signals";
+define("q-text", QText);
 
-    const comment = get(answer, "comment");
+// ========================================
+// ============== helpers =================
+// ========================================
+
+export function setComment(target: HTMLElement, meta: AnswerMeta|null) {
+
+    const comment = meta === null ? "" : meta.comment;
+
     if(comment === "")
         target.removeAttribute("comment");
     else
         target.setAttribute("comment", comment);
 }
 
-export function setGlobalGrade(target: HTMLElement, answer: Answer|null, max: number, pts: (grade: number) => number) {
+export function setGlobalGrade(target: HTMLElement, meta: AnswerMeta|null, max: number, pts: (grade: number) => number) {
 
     if( max === 0)
         return;
 
-    const score = get(answer, "grade", val => pts(val) );
-
-    console.warn(answer, score);
-
+    const score = meta === null ? "" : `${pts(meta.grade)}`;
     target.textContent = `[${score}/${max}]`;
 }
 
@@ -46,39 +76,3 @@ export function setAnswerColor(target: HTMLElement, grade: number|undefined) {
         target.setAttribute('grade', ">.5");
     }
 }
-
-class QText extends LISS({html, style:css, css})<Answer<string>> {
-
-    constructor() {
-        super();
-
-        const input = this.content.querySelector<HTMLInputElement>(".answer")!;
-
-        const span_grade = this.content.querySelector<HTMLElement>(".grade")!;
-        //const span_pts   = this.content.querySelector<HTMLElement>(".pts")!;
-
-        const pts            = +this.host.getAttribute("pts")!;
-
-        this.signal.listen( () => {
-
-            const value = this.signal.value;
-
-            setGlobalGrade(span_grade, value, pts, (grade) => grade*pts);
-            setAnswerColor(input, value?.grade);
-            setComment(input, value);
-
-            const answer = get(value, "answer");
-            if( answer !== input.innerHTML )// avoid cursor update issue... 
-                input.innerHTML = answer;
-        });
-
-        input.addEventListener("input", () => {
-
-            this.signal.value = {
-                answer: input.innerHTML
-            };
-        })
-    }
-}
-
-LISS.define("q-text", QText);
