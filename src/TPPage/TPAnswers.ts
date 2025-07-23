@@ -39,7 +39,7 @@ export class TPAnswers implements FileManagerOpts<Answers> {
 
             this.#filemanager.file_content.value = value.map( (e,idx) => {
                 const elem = {answer: e} as Answer<unknown>;
-                const meta = initial[idx].meta;
+                const meta = initial?.[idx].meta;
                 if( meta !== undefined )
                     elem.meta = meta;
 
