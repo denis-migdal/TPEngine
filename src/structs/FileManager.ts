@@ -80,7 +80,11 @@ export default class FileManager<T> {
         const data = localStorage.getItem(name);
 
         if( data === null) {
-            this.#file.value = null;
+            const content = this.#content.source = new Signal();
+            this.#file.value = {
+                content,
+                filename: ""
+            };
             return;
         }
 
