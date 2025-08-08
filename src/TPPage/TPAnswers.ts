@@ -1,5 +1,6 @@
 import "@TPEngine/Questions/QText";
 import "@TPEngine/Questions/QMultiText";
+import "@TPEngine/Questions/QFile";
 import FileManager, { FileManagerOpts } from "../structs/FileManager";
 import { Answer, AnswerMeta, Answers, AnswersConv } from "../structs/Answers";
 import { InputMerger, OutputMerger } from "@LISS/src/signals";
