@@ -10,6 +10,8 @@ import { upload } from "@TPEngine/utils/upload";
 class QFile extends LISS({html, css:[answer_css, css]}, WithBare, WithContent, WithRWValue<{content: string, type:string}>, WithMeta<AnswerMeta>) {
 
     readonly pts        = +this.host.getAttribute("pts")!;
+    readonly hasViewer  = this.host.getAttribute("viewer")! !== "false";
+
     readonly span_grade = this.content.querySelector<HTMLElement>('.grade')!;
     readonly answer     = this.content.querySelector<HTMLIFrameElement>('.answer')!;
 
@@ -22,7 +24,9 @@ class QFile extends LISS({html, css:[answer_css, css]}, WithBare, WithContent, W
 
             const file = (await upload(this.accepts))!;
             const data        = URL.createObjectURL(file);
-            this.answer.src = data;
+
+            if( this.hasViewer )
+                this.answer.src = data;
 
             this._output.value = {
                 type   : file.type,
@@ -66,7 +70,9 @@ class QFile extends LISS({html, css:[answer_css, css]}, WithBare, WithContent, W
             // @ts-ignore : fromBase64 should be added in Edge/Chrome soon.
             const file = new Blob([Uint8Array.fromBase64(content)], {type});
             const data = URL.createObjectURL(file);
-            this.answer.src = data;
+
+            if( this.hasViewer )
+                this.answer.src = data;
 
             this._output.value = { type, content }
         });

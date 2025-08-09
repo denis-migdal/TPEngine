@@ -1,3 +1,9 @@
+:host([viewer="false"]) {
+    & .answer {
+        display: none;
+    }
+}
+
 :host {
 
     & .answer {
