@@ -10,7 +10,7 @@ const p = new URLSearchParams(location.search);
 let student = p.get('nom');
 let isDS = p.get('ds') !== null;
 
-if( isDS !== null && student === null ) {
+if( isDS && student === null ) {
     student = prompt('Entrez votre nom sous la forme "NOM Prénom"')!.toUpperCase();
     history.pushState({}, "", `${location.search}&nom=${student}`);
 }
