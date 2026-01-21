@@ -40,7 +40,7 @@ export default class RMultiText extends LISS({html, css: [css, answer_css]},
             getInput<string>(answer_text__div).value = answers![i];
 
             // not ideal...
-            const grade_html = this.answers_html.querySelector<HTMLInputElement>(".grade"  )!;
+            const grade_html = answer_div.querySelector<HTMLInputElement>(".grade"  )!;
 
             if( grades[i] !== undefined) {
                 grade_html.value = `${grades[i]}`;
