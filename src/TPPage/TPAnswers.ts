@@ -18,7 +18,8 @@ export class TPAnswers implements FileManagerOpts<Answers> {
 
     readonly export_filename: string;
 
-    readonly #filemanager = new FileManager(this);
+    // internal use only
+    readonly filemanager = new FileManager(this);
 
     #input: InputMerger;
     #meta : InputMerger;
@@ -36,9 +37,9 @@ export class TPAnswers implements FileManagerOpts<Answers> {
             if( value === null )
                 return; // should not occurs ?
 
-            const initial = this.#filemanager.file_content.value!;
+            const initial = this.filemanager.file_content.value!;
 
-            this.#filemanager.file_content.value = value.map( (e,idx) => {
+            this.filemanager.file_content.value = value.map( (e,idx) => {
                 const elem = {answer: e} as Answer<unknown>;
                 const meta = initial?.[idx]?.meta;
                 if( meta !== undefined )
@@ -49,11 +50,11 @@ export class TPAnswers implements FileManagerOpts<Answers> {
         })
 
         // do NOT listen to file_content.
-        this.#filemanager.file.listen( () => this.#updateFields() );
+        this.filemanager.file.listen( () => this.#updateFields() );
     }
 
     #updateFields() {
-        const content = this.#filemanager.file_content.value;
+        const content = this.filemanager.file_content.value;
 
         if( content === null) {
             this.#input.value = null;
@@ -64,11 +65,11 @@ export class TPAnswers implements FileManagerOpts<Answers> {
         this.#meta.value  = content.map( e => e.meta??null as AnswerMeta|null );
     }
 
-    import() { this.#filemanager.import(); }
-    export() { this.#filemanager.export(); }
+    import() { this.filemanager.import(); }
+    export() { this.filemanager.export(); }
 
     load(buffer: ArrayBuffer, filename: string|null) {
-        this.#filemanager.loadFromBuffer( buffer, filename );
+        this.filemanager.loadFromBuffer( buffer, filename );
     }
 
 }

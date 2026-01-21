@@ -8,16 +8,15 @@ import { TPAnswers } from "./TPAnswers";
 const p = new URLSearchParams(location.search);
 
 let student = p.get('nom');
-let ds_id = p.get('ds');
+let isDS = p.get('ds') !== null;
 
-if( ds_id !== null && student === null ) {
+if( isDS !== null && student === null ) {
     student = prompt('Entrez votre nom sous la forme "NOM Prénom"')!.toUpperCase();
     history.pushState({}, "", `${location.search}&nom=${student}`);
 }
 
-const export_filename = ds_id === null
-                            ? `${location.pathname.slice(1,-1).replaceAll("/", "_")}.answers`
-                            : `${ds_id}_${location.hostname}_${student}.answers`;
+const export_filename = isDS ? `${location.pathname.slice(1,-1).replaceAll("/", "_")}.answers`
+                             : `${location.hostname}_${student}.answers`;
 
 // ===========================================
 // ===== get fields + messages events ========
@@ -74,6 +73,23 @@ function highlight(q_id: number) {
 
 const TPanswers = new TPAnswers({export_filename}, ...inputs);
 
+if( isDS ) {
+    const fm = TPanswers.filemanager;
+
+    fm.file_content.listen( async () => {
+
+        const data = await fm.saveToBuffer();
+
+        await fetch(`${location.origin}/save`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/octet-stream",
+            },
+            body: data
+        });
+    });
+}
+
 // ===========================================
 // ===== create toolbar (import/export)
 // ===========================================
@@ -86,6 +102,27 @@ const export_btn = document.createElement('span');
 export_btn.textContent = "[export]";
 export_btn.addEventListener('click', async () => { TPanswers.export(); });
 
+const submit_btn = document.createElement('span');
+submit_btn.textContent = "[déposer]";
+submit_btn.addEventListener('click', async () => {
+
+    if( ! confirm(`${student}\nÊtes vous sur de vouloir rendre ?`) )
+        return;
+
+    const fm = TPanswers.filemanager;
+    const data = await fm.saveToBuffer();
+
+    await fetch(`${location.origin}/submit?name=${student}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/octet-stream",
+        },
+        body: data
+    });
+
+    alert("Rendu");
+});
+
 const toolbar = document.createElement("span");
 toolbar.classList.add("toolbar");
 toolbar.style.setProperty("position", "fixed");
@@ -93,5 +130,5 @@ toolbar.style.setProperty("bottom", "5px");
 toolbar.style.setProperty("right", "5px");
 toolbar.style.setProperty("cursor", "pointer");
 
-toolbar.append(import_btn, export_btn);
+toolbar.append(import_btn, isDS ? submit_btn : export_btn);
 document.body.append(toolbar);
