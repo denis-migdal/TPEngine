@@ -9,6 +9,14 @@
 - `npm run build`
 - `npm run watch`
 
+## Procédure
+
+1. Dans un dossier mettre
+  1. les rendus
+  2. sujet.url
+  3. corrige.answers (export du corrigé)
+2. Compresser et importer.
+
 ## TODO
 
 - export to moodle
