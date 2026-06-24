@@ -4,8 +4,8 @@ import { setAnswerColor } from "@TPEngine/Questions/QText";
 import {css as answer_css} from "../RText/";
 import { MultiTextAnswer, MultiTextAnswerMeta } from "@TPEngine/Questions/QMultiText";
 
-const html = require('!!raw-loader!./index.html').default;
-const css  = require('!!raw-loader!./index.css' ).default;
+const html = __LOAD_FILE__("./index.html");
+const css = __LOAD_FILE__("./index.css");
 
 // cf RText
 export default class RMultiText extends LISS({html, css: [css, answer_css]},

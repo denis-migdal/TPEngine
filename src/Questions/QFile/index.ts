@@ -1,8 +1,9 @@
 import {LISS, WithBare, WithContent, WithMeta, WithRWValue, define} from "@LISS/libs/LISS";
 import { AnswerMeta } from "@TPEngine/structs/Answers";
 
-const html = require('!!raw-loader!./index.html').default;
-const css  = require('!!raw-loader!./index.css' ).default;
+const html = __LOAD_FILE__("./index.html");
+
+const css = __LOAD_FILE__("./index.css");
 
 import {css as answer_css, setAnswerColor, setComment, setGlobalGrade} from "../QText/";
 import { upload } from "@TPEngine/utils/upload";
@@ -43,9 +44,6 @@ export class QFile extends LISS({html, css:[answer_css, css]},
         });
 
         this.answer.addEventListener("load", () => {
-
-            const img = this.answer.contentDocument!.documentElement!
-                                .querySelector('img');
             
             const body = this.answer.contentDocument!.body!;
 
@@ -62,7 +60,10 @@ export class QFile extends LISS({html, css:[answer_css, css]},
                 svg.style.setProperty("height", "100vh")
             }
 
-            /*if(img !== null) {
+            /*
+            const img = this.answer.contentDocument!.documentElement!
+                                .querySelector('img');
+            if(img !== null) {
                 img.style.setProperty('margin', 'auto');
             }*/
         })

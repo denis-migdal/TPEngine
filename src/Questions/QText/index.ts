@@ -1,8 +1,8 @@
 import {LISS, WithBare, WithContent, WithMeta, WithRWValue, define, getValue} from "@LISS/libs/LISS";
-import { Answer, AnswerMeta } from "@TPEngine/structs/Answers";
+import { AnswerMeta } from "@TPEngine/structs/Answers";
 
-const html        = require('!!raw-loader!./index.html').default as string;
-export const css  = require('!!raw-loader!./index.css' ).default as string;
+const html = __LOAD_FILE__("./index.html");
+export const css = __LOAD_FILE__("./index.css");
 
 class QText extends LISS({html, css}, WithBare, WithContent, WithRWValue<string>, WithMeta<AnswerMeta>) {
 

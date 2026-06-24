@@ -68,7 +68,7 @@ export default class FileManager<T> {
         await this.loadFromBuffer( await file.arrayBuffer(), file.name );
     }
 
-    async saveToLocalStorage(name: string) {
+    async saveToLocalStorage(_name: string) {
 
         const buffer = await this.saveToBuffer();
         if( buffer === null)

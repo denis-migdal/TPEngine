@@ -1,8 +1,8 @@
 import {InputMerger, LISS, OutputMerger, WithBare, WithContent, WithMeta, WithRWValue, define, getInput, getOutput} from "@LISS/libs/LISS";
 import { Answer, AnswerMeta } from "@TPEngine/structs/Answers";
 
-const html = require('!!raw-loader!./index.html').default;
-const css  = require('!!raw-loader!./index.css' ).default;
+const html = __LOAD_FILE__("./index.html");
+const css = __LOAD_FILE__("./index.css");
 
 import {css as answer_css, setAnswerColor, setComment, setGlobalGrade} from "../QText/";
 

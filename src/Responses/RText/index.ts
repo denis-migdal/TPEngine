@@ -2,8 +2,9 @@ import {LISS, WithBare, WithContent, WithOutput, define, getInput} from "@LISS/l
 import { setAnswerColor } from "@TPEngine/Questions/QText";
 import { Answer, AnswerMeta } from "@TPEngine/structs/Answers";
 
-       const html = require('!!raw-loader!./index.html').default;
-export const css  = require('!!raw-loader!./index.css' ).default;
+const html = __LOAD_FILE__("./index.html");
+
+export const css = __LOAD_FILE__("./index.css");
 
 // input is set at construction, no need for WithMeta/WithInput
 // /!\ use AnswerMeta to ensure answer isn't modified.
