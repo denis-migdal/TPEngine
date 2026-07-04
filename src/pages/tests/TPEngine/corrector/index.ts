@@ -2,11 +2,11 @@ import { resolve } from "MWL@2026:DOM/ElementsResolver";
 import { observeChanges } from "MWL@2026:Reactive/Observers/observe";
 import ObserverRegistry from "MWL@2026:Reactive/Observers/ObserverRegistry";
 import { updateProperties } from "MWL@2026:Reactive/Properties/createProperties";
-import BrowserFile from "TPEngine@2026:DataStore/BrowserFile";
-import LocalStorage from "TPEngine@2026:DataStore/LocalStorage";
-import Pager from "TPEngine@2026:Pager";
-import QGText from "TPEngine@2026:QuestionGrader/QText";
-import SessionData from "TPEngine@2026:SessionData";
+import BrowserFile from "TPEngine@2026:core/DataStore/BrowserFile";
+import LocalStorage from "TPEngine@2026:core/DataStore/LocalStorage";
+import Pager from "TPEngine@2026:core/Pager";
+import QGText from "TPEngine@2026:core/QuestionGrader/QText";
+import SessionData from "TPEngine@2026:core/SessionData";
 
 const elems = resolve(document.body, {
                         importBtn  : HTMLElement,

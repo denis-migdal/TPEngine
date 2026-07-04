@@ -4,7 +4,7 @@ import { updateProperties, WithProperties } from "MWL@2026:Reactive/Properties/c
 import LocalStorage from "./DataStore/LocalStorage";
 import StudentWork, { Question } from "./StudentWork";
 
-import "TPEngine@2026:Questions/";
+import "TPEngine@2026:core/Questions/";
 
 export type QuestionElement = HTMLElement & WithProperties<Question<unknown>>;
 

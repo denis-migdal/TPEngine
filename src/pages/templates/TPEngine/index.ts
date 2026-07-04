@@ -1,1 +1,1 @@
-import "MWL@2026:libs/TPEngine/template";
+import "TPEngine@2026:libs/template";
