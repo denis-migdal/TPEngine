@@ -1,0 +1,12 @@
+:host {
+
+    --nbCols: 1;
+
+    [data-wcid="answersList"] {
+        display: grid;
+        grid-template-columns: repeat( var(--nbCols), 0fr 1fr);
+        column-gap: 5px;
+        row-gap: 5px;
+        align-items: center;
+    }
+}

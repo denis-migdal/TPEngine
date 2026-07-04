@@ -1,0 +1,6 @@
+.TPEngine-toolbar {
+    position: fixed;
+    bottom  : 5px;
+    right   : 5px;
+    cursor  : pointer;
+}

@@ -1,0 +1,25 @@
+/* everything can be shared */
+:host {
+
+    --grade-color: transparent;
+
+    & .answer_div {
+        display: flex;
+        gap: 5px;
+    }
+
+    & .answer {
+        border-radius: 2px;
+        outline: 2px solid var(--grade-color);
+    }
+
+    & [data-wcid="score"] {
+        text-align: center;
+        font-weight: bold;
+
+        &:invalid {
+            background-color: red;
+        }
+    }
+
+}

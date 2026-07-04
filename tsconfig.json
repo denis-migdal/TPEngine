@@ -1,27 +1,16 @@
 {
-    "include": ["src"],
+    "extends": "./build/WebpackFramework/files/tsconfig.json",
+
+    "include": ["./src"],
+
     "compilerOptions": {
+
+        "rootDir": ".",
         "outDir": "./build/TS",
+
         "paths": {
-            "@LISS/*" : ["./libs/LISS/V3/*"],
-            "@TPEngine/*": ["./src/*"]
-        },
-        "sourceMap": true,
-        "alwaysStrict": true,
-
-        "strict": true,
-        "noErrorTruncation": true,
-        "exactOptionalPropertyTypes": true,
-        "noFallthroughCasesInSwitch": true,
-        "noImplicitOverride": true,
-        "noImplicitReturns": true,
-        "allowSyntheticDefaultImports": true,
-
-        "module": "esnext",
-        "target": "esnext",
-        "allowJs": true,
-        "resolveJsonModule": true,
-        "moduleResolution": "node",
-        "incremental": true,
+            "MWL@2026:*"     : ["./libs/MWL@2026/src/*"],
+            "TPEngine@2026:*": ["./src/*"],
+        }
     }
 }
