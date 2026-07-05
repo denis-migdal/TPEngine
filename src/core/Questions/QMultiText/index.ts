@@ -38,6 +38,8 @@ export default defineWebComponent(
         },
         initialize: (ctx, ctrler) => {
 
+            // we could use taskTrigger() in some places...
+
             const nbFields = ctrler.properties.nbFields;
             let nbCols = ctrler.properties.nbCols ?? nbFields;
 
@@ -57,8 +59,6 @@ export default defineWebComponent(
 
                 observePropertyChanges(fields[i], "text", function() {
                     if( this.origin === ctrler) return;
-
-                    console.warn('set');
 
                     const newAnswer = new Array<string>(nbFields);
                     for(let i = 0; i < nbFields; ++i)

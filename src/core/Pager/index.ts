@@ -1,4 +1,4 @@
-import taskTrigger from "MWL@2026:DOM/FrameScheduler/taskTrigger";
+import deferredCallback from "MWL@2026:DOM/FrameScheduler/deferredCallback";
 import defineWebComponent from "MWL@2026:DOM/WebComponent/defineWebComponent";
 import { Signal, Value } from "MWL@2026:Reactive/Properties/Controllers";
 import { WithProperties } from "MWL@2026:Reactive/Properties/createProperties";
@@ -20,7 +20,7 @@ const Pager = defineWebComponent(
         },
         initialize: (ctx, ctrler, renderer) => {
 
-            observe(ctrler, taskTrigger(renderer, () => {
+            observe(ctrler, deferredCallback(renderer, () => {
                 ctx.elements.curText.textContent = `${ctrler.properties.cur+1}`;
                 ctx.elements.maxText.textContent = `${ctrler.properties.max}`;
             }));
