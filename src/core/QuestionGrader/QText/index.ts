@@ -4,39 +4,39 @@ import { updateProperties, WithProperties } from "MWL@2026:Reactive/Properties/c
 import { updateGradeColor } from "TPEngine@2026:core/Questions/core/base";
 import { QTextProperties }  from "TPEngine@2026:core/Questions/QText";
 
-const QGText = defineWebComponent(
-    WithProperties(QTextProperties), {
-    name: "qg-text",
-    content: __LOAD_FILE__("./index.html"),
-    style  : __LOAD_FILE__("./index.css"),
+const QGText = defineWebComponent({
+    name      : "qg-text",
+    Controller: WithProperties(QTextProperties),
+    content   : __LOAD_FILE__("./index.html"),
+    style     : __LOAD_FILE__("./index.css"),
     elements: {
         editor : CodeEditor,
         comment: HTMLInputElement,
         score  : HTMLInputElement,
     },
-    initialize: (ctx, ctrler) => {
+    initialize(ctrler) {
 
         // no sync: WE are the one pushing changes.
 
-        const comment = ctx.elements.comment;
+        const comment = this.elements.comment;
         comment.value = ctrler.properties.comment;
         comment.addEventListener("input", () => {
             ctrler.properties.comment = comment.value;
         });
 
-        const scoreInput = ctx.elements.score;
+        const scoreInput = this.elements.score;
 
         const score = ctrler.properties.score;
-        updateGradeColor(ctx.target, score);
+        updateGradeColor(this.target, score);
         scoreInput.value = `${score}`;
 
         scoreInput.addEventListener("input", () => {
             const score = +scoreInput.value;
             ctrler.properties.score = score;
-            updateGradeColor(ctx.target, score);
+            updateGradeColor(this.target, score);
         });
 
-        updateProperties(ctx.elements.editor.properties, {
+        updateProperties(this.elements.editor.properties, {
             lang: ctrler.properties.lang,
             text: ctrler.properties.answer
         });

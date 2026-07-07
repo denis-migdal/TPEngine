@@ -1,7 +1,8 @@
 TODO:
-- move to TPEngine repo
+- use PropertyRenderer.
 - subject
     - QFile
+    - hide import/export menu when printing...
 - corrector
     - QMultiText & QFile
     - answers page
@@ -14,8 +15,6 @@ TODO:
 ## TODO
 
 - see branch master for previous version...
-
-- test export/import.
 - merge & sort
 
 - docs (?)

@@ -12,27 +12,27 @@ export const QTextProperties = {
     lang   : Value<string|null>(null),
 }
 
-export default defineWebComponent(
-    WithProperties(QTextProperties),
-    {
-        name   : "q-text",
+export default defineWebComponent({
+        name      : "q-text",
+        Controller: WithProperties(QTextProperties),
         content: __LOAD_FILE__("./index.html"),
         style  : baseStyle,
         elements: {
             editor: CodeEditor,
             grade : HTMLElement,
         },
-        initialize: (ctx, ctrler) => {
+        initialize(ctrler) {
 
-            const editor = ctx.elements.editor;
+            const editor = this.elements.editor;
 
-            syncProperties( ctrler, editor.controller,
+            syncProperties( ctrler, editor.api,
                             {
                                 lang  : "lang",
                                 answer: "text"
                             });
 
             // we could use taskTrigger() here...
-            observeMeta(ctx, ctrler, true);
+            // watchMeta (?).
+            observeMeta(this, ctrler, true);
         }
     });

@@ -1,6 +1,6 @@
 import { Fixed, Value } from "MWL@2026:Reactive/Properties/Controllers";
 import {type WithProperties} from "MWL@2026:Reactive/Properties/createProperties";
-import { observeProperties, observeProperty } from "MWL@2026:Reactive/Properties/observeProperties";
+import { watchProperties, watchProperty } from "MWL@2026:Reactive/Properties/watchProperties";
 
 export function QProperties<T>(initialAnswer: T) {
     return {
@@ -14,7 +14,7 @@ export function QProperties<T>(initialAnswer: T) {
 
 export const baseStyle = __LOAD_FILE__("./index.css");
 
-
+//TODO: use PropertyRenderer...
 export function observeMeta(ctx: {
                                 readonly target: HTMLElement
                                 readonly elements: {
@@ -29,14 +29,14 @@ export function observeMeta(ctx: {
                             }>,
                             color: boolean) {
 
-    observeProperty(ctrler, "comment", () => {
+    watchProperty(ctrler, "comment", () => {
         ctx.target.style.setProperty(
                                         '--comment',
                                         `"${ctrler.properties.comment}"`
                                     );
     });
 
-    observeProperties(ctrler, ["score", "coeff"], () => {
+    watchProperties(ctrler, ["score", "coeff"], () => {
 
         const grade = ctx.elements.grade;
         const coeff = ctrler.properties.coeff;
@@ -60,7 +60,7 @@ export function observeMeta(ctx: {
     });
 }
 
-
+//TODO: delay (?).
 export function updateGradeColor(target: HTMLElement, score: number|null) {
     
     let gradeColor = "transparent";

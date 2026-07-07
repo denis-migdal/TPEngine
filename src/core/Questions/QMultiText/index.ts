@@ -4,7 +4,7 @@ import { baseStyle, observeMeta, QProperties, updateGradeColor } from "../core/b
 import { Computed, Fixed, Value } from "MWL@2026:Reactive/Properties/Controllers";
 import CodeEditor from "MWL@2026:Components/code/code-editor";
 import html from "MWL@2026:DOM/ShadowTemplate/parsers/html";
-import { observeProperty, observePropertyChanges } from "MWL@2026:Reactive/Properties/observeProperties";
+import { watchProperty, watchPropertyChanges } from "MWL@2026:Reactive/Properties/watchProperties";
 import { setProperty } from "MWL@2026:Reactive/Properties/createProperties";
 
 export const QMultiTextProperties = {
@@ -26,24 +26,23 @@ export const QMultiTextProperties = {
     }),
 }
 
-export default defineWebComponent(
-    WithProperties(QMultiTextProperties),
-    {
-        name   : "q-multitext",
+export default defineWebComponent({
+        name      : "q-multitext",
+        Controller: WithProperties(QMultiTextProperties),
         content: __LOAD_FILE__("./index.html"),
         style  : [baseStyle, __LOAD_FILE__("./index.css")],
         elements: {
             grade      : HTMLElement,
             answersList: HTMLElement
         },
-        initialize: (ctx, ctrler) => {
+        initialize(ctrler) {
 
             // we could use taskTrigger() in some places...
 
             const nbFields = ctrler.properties.nbFields;
-            let nbCols = ctrler.properties.nbCols ?? nbFields;
+            const   nbCols = ctrler.properties.nbCols ?? nbFields;
 
-            ctx.target.style.setProperty("--nbCols", `${nbCols}`);
+            this.target.style.setProperty("--nbCols", `${nbCols}`);
 
             const fields = new Array<InstanceType<typeof CodeEditor>>(nbFields);
 
@@ -55,9 +54,10 @@ export default defineWebComponent(
                 field.classList.add("graded", "compact");
 
                 fields[i] = field;
-                ctx.elements.answersList.append( item, field );
+                this.elements.answersList.append( item, field );
 
-                observePropertyChanges(fields[i], "text", function() {
+                // bind properties.
+                watchPropertyChanges(fields[i], "text", function() {
                     if( this.origin === ctrler) return;
 
                     const newAnswer = new Array<string>(nbFields);
@@ -68,7 +68,8 @@ export default defineWebComponent(
                 });
             }
 
-            observeProperty(ctrler, "answer", function() {
+            // bind properties.
+            watchProperty(ctrler, "answer", function() {
                 if( this.origin === fields ) return;
 
                 const answer = ctrler.properties.answer;
@@ -79,9 +80,11 @@ export default defineWebComponent(
                                 ctrler);
             })
 
-            observeMeta(ctx, ctrler, false);
+            // UI...
+            observeMeta(this, ctrler, false);
 
-            observeProperty(ctrler, "scores", () => {
+            // UI...
+            watchProperty(ctrler, "scores", () => {
                 const scores = ctrler.properties.scores;
                 
                 for(let i = 0; i < fields.length; ++i) {
