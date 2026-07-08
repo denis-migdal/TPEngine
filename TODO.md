@@ -2,7 +2,6 @@ TODO:
 - use PropertyRenderer.
 - subject
     - QFile
-    - hide import/export menu when printing...
 - corrector
     - QMultiText & QFile
     - answers page
