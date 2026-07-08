@@ -54,12 +54,9 @@ export default defineWebComponent({
                                 });
 
             this.elements.uploadBtn.addEventListener("click", async () => {
+
                 const file = (await upload(ctrler.properties.accept))!;
-
-                /*const data = URL.createObjectURL(file);
-                if( hasViewer )
-                    this.elements.answer.src = data;*/
-
+                
                 ctrler.properties.answer = {
                     type   : file.type,
                     content: (await file.bytes()).toBase64()
