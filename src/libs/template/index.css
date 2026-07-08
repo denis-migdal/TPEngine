@@ -4,3 +4,9 @@
     right   : 5px;
     cursor  : pointer;
 }
+
+@media print {
+    .TPEngine-toolbar {
+        display: none;
+    }
+}
