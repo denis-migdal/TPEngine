@@ -1,7 +1,6 @@
 import { observe, observeChanges } from "MWL@2026:Reactive/Observers/observe";
 import { updateProperties, WithProperties } from "MWL@2026:Reactive/Properties/createProperties";
 
-import LocalStorage from "./DataStore/LocalStorage";
 import StudentWork, { Question } from "./StudentWork";
 
 import "TPEngine@2026:core/Questions/";
@@ -26,6 +25,13 @@ export class SubjectPage {
         this.init(); // async
     }
 
+    localStoreEnabled = true;
+
+    async openCorrection(data: ArrayBuffer) {
+        this.localStoreEnabled = false;
+        await this.studentWork.import(data, this);
+    }
+
     async init() {
         await this.initLocalStore();
         this.initQuestions();
@@ -40,9 +46,12 @@ export class SubjectPage {
                                        location.pathname);
 
         await localStore.load();
+
+        const pthis = this;
         
         observeChanges(this.studentWork, async function() {
-            if( this.origin === localStore) return;
+            if(  ! pthis.localStoreEnabled
+                && this.origin === localStore) return;
         
             await localStore.save();
         });

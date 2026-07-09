@@ -3,11 +3,11 @@ import { observeChanges } from "MWL@2026:Reactive/Observers/observe";
 import BrowserFile from "TPEngine@2026:core/DataStore/BrowserFile";
 import { QuestionElement, SubjectPage } from "TPEngine@2026:core/SubjectPage";
 
+const p = new URLSearchParams(location.search);
+
 /////
 // DS mode
 /////
-
-const p = new URLSearchParams(location.search);
 
 let student = p.get('nom');
 let isDS = p.get('ds') !== null;
@@ -29,6 +29,47 @@ function getQuestions() {
 }
 
 const subject = new SubjectPage( getQuestions() );
+
+/////
+// Corrigé
+/////
+
+
+const cpwd = p.get("cpwd");
+if( cpwd !== null ) {
+
+    const file = `${location.origin}${location.pathname}/assets/answers.enc`;
+    const encrypted = await (await fetch(file)).arrayBuffer();
+    
+    function hexToBytes(hex: string): ArrayBuffer {
+        return new Uint8Array(
+            hex.match(/.{2}/g)!.map((b) => parseInt(b, 16)),
+        ).buffer;
+    }
+
+    const iv = encrypted.slice(0, 12);
+    const ciphertext = encrypted.slice(12);
+
+    const key = await crypto.subtle.importKey(
+        "raw",
+        hexToBytes(cpwd),
+        {
+            name: "AES-GCM",
+        },
+        false,
+        ["decrypt"],
+    );
+
+    const decrypted = await crypto.subtle.decrypt({
+            name: "AES-GCM",
+            iv,
+        },
+        key,
+        ciphertext,
+    );
+
+    subject.openCorrection(decrypted);
+}
 
 /////
 // Import/Export

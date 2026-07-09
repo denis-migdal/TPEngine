@@ -1,0 +1,42 @@
+#!/usr/bin/env -S deno --allow-read --allow-write
+
+// @ts-nocheck
+
+const inputFile = Deno.args[0];
+const outputFile = Deno.args[1] ?? `${inputFile}.enc`
+
+const data = await Deno.readFile(inputFile);
+
+const keyBytes = crypto.getRandomValues(new Uint8Array(32)); // AES-256
+const iv = crypto.getRandomValues(new Uint8Array(12));       // GCM recommandé
+
+const key = await crypto.subtle.importKey(
+  "raw",
+  keyBytes,
+  {
+    name: "AES-GCM",
+  },
+  false,
+  ["encrypt"],
+);
+
+const encrypted = await crypto.subtle.encrypt(
+  {
+    name: "AES-GCM",
+    iv,
+  },
+  key,
+  data,
+);
+
+// Format : IV + données chiffrées + tag
+const output = new Uint8Array(iv.length + encrypted.byteLength);
+output.set(iv, 0);
+output.set(new Uint8Array(encrypted), iv.length);
+
+await Deno.writeFile(outputFile, output);
+
+console.log(
+  "Clé AES-256 :",
+  [...keyBytes].map(b => b.toString(16).padStart(2, "0")).join(""),
+);
