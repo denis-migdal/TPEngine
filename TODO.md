@@ -1,6 +1,8 @@
 TODO:
 - use PropertyRenderer.
+- register current name in localStorage instead of storing it with the filename ?
 - corrector
+    - use IDB
     - QMultiText & QFile
     - answers page
         - merge identical answers

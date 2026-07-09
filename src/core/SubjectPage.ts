@@ -5,6 +5,7 @@ import LocalStorage from "./DataStore/LocalStorage";
 import StudentWork, { Question } from "./StudentWork";
 
 import "TPEngine@2026:core/Questions/";
+import IndexDB from "./DataStore/IndexDB";
 
 export type QuestionElement = HTMLElement & WithProperties<Question<unknown>>;
 
@@ -26,15 +27,18 @@ export class SubjectPage {
     }
 
     async init() {
-        await this.initLocalStorage();
+        await this.initLocalStore();
         this.initQuestions();
         this.initHighlight();
     }
 
-    async initLocalStorage() {
+    async initLocalStore() {
 
-        const localStore = new LocalStorage(this.studentWork,
-                                            location.pathname);
+        //const localStore = new LocalStore(this.studentWork,
+        //                                    location.pathname);
+        const localStore = new IndexDB(this.studentWork,
+                                       location.pathname);
+
         await localStore.load();
         
         observeChanges(this.studentWork, async function() {

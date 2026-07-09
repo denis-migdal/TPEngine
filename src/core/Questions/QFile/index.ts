@@ -1,5 +1,5 @@
 import defineWebComponent from "MWL@2026:DOM/WebComponent/defineWebComponent";
-import { Value } from "MWL@2026:Reactive/Properties/Controllers";
+import { Fixed, Value } from "MWL@2026:Reactive/Properties/Controllers";
 import { WithProperties } from "MWL@2026:Reactive/Properties/createProperties";
 
 import { baseStyle, observeMeta, QProperties } from "../core/base";
@@ -15,7 +15,7 @@ export type QFileAnswer = {
 // we could also have a default URL...
 export const QFileProperties = {
     ...QProperties<QFileAnswer|null>(null),
-    accept: Value<string>(".*"),
+    accept: Fixed<string>(".*"),
 }
 
 export default defineWebComponent({
@@ -55,6 +55,7 @@ export default defineWebComponent({
 
             this.elements.uploadBtn.addEventListener("click", async () => {
 
+                console.warn(ctrler.properties.accept);
                 const file = (await upload(ctrler.properties.accept))!;
                 
                 ctrler.properties.answer = {

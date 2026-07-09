@@ -42,7 +42,7 @@ const exportBtn = html`<span>[${isDS ? "Déposer" : "Exporter"}]</span>`;
 toolbar.append(importBtn, exportBtn);
 document.body.append(toolbar);
 
-const file = new BrowserFile(subject.studentWork, ".answer", EXPORT_FILENAME);
+const file = new BrowserFile(subject.studentWork, FILE_EXT, EXPORT_FILENAME);
 importBtn.addEventListener("click", () => file.load() );
 
 async function exporter() {

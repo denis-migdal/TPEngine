@@ -43,8 +43,6 @@ export default class StudentWork implements Serializable {
 
     setQuestionData(data: QuestionData<unknown>, origin: unknown) {
 
-        console.warn("R", this.resourceName);
-
         this.data[data.QID] = data;
         trigger(this, origin);
     }
