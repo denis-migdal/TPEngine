@@ -1,6 +1,5 @@
 import { Fixed, Value } from "MWL@2026:Reactive/Properties/Controllers";
-import {type WithProperties} from "MWL@2026:Reactive/Properties/createProperties";
-import { watchProperties, watchProperty } from "MWL@2026:Reactive/Properties/watchProperties";
+import PropertiesRenderer from "MWL@2026:Reactive/Properties/PropertiesRenderer";
 
 export function QProperties<T>(initialAnswer: T) {
     return {
@@ -14,32 +13,31 @@ export function QProperties<T>(initialAnswer: T) {
 
 export const baseStyle = __LOAD_FILE__("./index.css");
 
-//TODO: use PropertyRenderer...
-export function observeMeta(ctx: {
+export function initializeMetaRendering(
+                            ctx: {
                                 readonly target: HTMLElement
                                 readonly elements: {
                                     readonly grade: HTMLElement
                                 }
-
                             },
-                            ctrler: WithProperties<{
+                            propsRenderer: PropertiesRenderer<{
                                 comment: string,
                                 score  : null|number,
                                 coeff  : null|number,
                             }>,
                             color: boolean) {
 
-    watchProperty(ctrler, "comment", () => {
+    propsRenderer.bind("comment", () => {
         ctx.target.style.setProperty(
                                         '--comment',
-                                        `"${ctrler.properties.comment}"`
+                                        `"${propsRenderer.properties.comment}"`
                                     );
     });
 
-    watchProperties(ctrler, ["score", "coeff"], () => {
+    propsRenderer.bind(["score", "coeff"], () => {
 
         const grade = ctx.elements.grade;
-        const coeff = ctrler.properties.coeff;
+        const coeff = propsRenderer.properties.coeff;
 
         if( coeff === null) { // not graded.
 
@@ -50,7 +48,7 @@ export function observeMeta(ctx: {
             return;
         }
 
-        const score = ctrler.properties.score;
+        const score = propsRenderer.properties.score;
 
         if( color )
             updateGradeColor(ctx.target, score);
@@ -60,7 +58,7 @@ export function observeMeta(ctx: {
     });
 }
 
-//TODO: delay (?).
+// do not delay: should/could be included in a deferred callback.
 export function updateGradeColor(target: HTMLElement, score: number|null) {
     
     let gradeColor = "transparent";

@@ -1,10 +1,11 @@
 import defineWebComponent from "MWL@2026:DOM/WebComponent/defineWebComponent";
-import { Fixed, Value } from "MWL@2026:Reactive/Properties/Controllers";
+import { Fixed } from "MWL@2026:Reactive/Properties/Controllers";
 import { WithProperties } from "MWL@2026:Reactive/Properties/createProperties";
 
-import { baseStyle, observeMeta, QProperties } from "../core/base";
+import { baseStyle, initializeMetaRendering, QProperties } from "../core/base";
 import { upload } from "TPEngine@2026:core/DataStore/core/upload";
-import { renderProperty } from "MWL@2026:DOM/FrameScheduler/PropertyRenderer";
+
+import createPropertiesDeferredRenderer from "MWL@2026:DOM/FrameScheduler/defer/createPropertiesDeferredRenderer";
 
 // TODO: could find a more optimal structure ?
 export type QFileAnswer = {
@@ -33,25 +34,23 @@ export default defineWebComponent({
             const hasViewer = this.target.getAttribute("viewer") !== "false";
             const answerViewer = this.elements.answer;
 
-            // we could use taskTrigger() here...
-            // watchMeta (?).
-            observeMeta(this, ctrler, true);
+            const propsRenderer = createPropertiesDeferredRenderer(ctrler, this.renderer);
+
+            initializeMetaRendering(this, propsRenderer, true);
 
             if( hasViewer )
-                renderProperty( ctrler, "answer",
-                                this.renderer, () => {
+                propsRenderer.bind("answer", () => {
+                    const answer = ctrler.properties.answer;
 
-                                    const answer = ctrler.properties.answer;
+                    if( answer === null) {
+                        answerViewer.src = "about:blank";
+                        return;
+                    }
 
-                                    if( answer === null) {
-                                        answerViewer.src = "about:blank";
-                                        return;
-                                    }
+                    const file = new Blob([Uint8Array.fromBase64(answer.content)], {type: answer.type});
 
-                                    const file = new Blob([Uint8Array.fromBase64(answer.content)], {type: answer.type});
-
-                                    answerViewer.src = URL.createObjectURL(file);
-                                });
+                    answerViewer.src = URL.createObjectURL(file);
+                });
 
             this.elements.uploadBtn.addEventListener("click", async () => {
 

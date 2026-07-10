@@ -1,11 +1,12 @@
 import defineWebComponent from "MWL@2026:DOM/WebComponent/defineWebComponent";
 import { WithProperties } from "MWL@2026:Reactive/Properties/createProperties";
-import { baseStyle, observeMeta, QProperties, updateGradeColor } from "../core/base";
+import { baseStyle, initializeMetaRendering, QProperties, updateGradeColor } from "../core/base";
 import { Computed, Fixed, Value } from "MWL@2026:Reactive/Properties/Controllers";
 import CodeEditor from "MWL@2026:Components/code/code-editor";
 import html from "MWL@2026:DOM/ShadowTemplate/parsers/html";
 import { watchProperty, watchPropertyChanges } from "MWL@2026:Reactive/Properties/watchProperties";
 import { setProperty } from "MWL@2026:Reactive/Properties/createProperties";
+import createPropertiesDeferredRenderer from "MWL@2026:DOM/FrameScheduler/defer/createPropertiesDeferredRenderer";
 
 export const QMultiTextProperties = {
     ...QProperties<null|readonly string[]>(null),
@@ -37,8 +38,6 @@ export default defineWebComponent({
         },
         initialize(ctrler) {
 
-            // we could use taskTrigger() in some places...
-
             const nbFields = ctrler.properties.nbFields;
             const   nbCols = ctrler.properties.nbCols ?? nbFields;
 
@@ -56,7 +55,7 @@ export default defineWebComponent({
                 fields[i] = field;
                 this.elements.answersList.append( item, field );
 
-                // bind properties.
+                // bind properties (not UI).
                 watchPropertyChanges(fields[i], "text", function() {
                     if( this.origin === ctrler) return;
 
@@ -68,7 +67,7 @@ export default defineWebComponent({
                 });
             }
 
-            // bind properties.
+            // bind properties (not UI).
             watchProperty(ctrler, "answer", function() {
                 if( this.origin === fields ) return;
 
@@ -81,10 +80,12 @@ export default defineWebComponent({
             })
 
             // UI...
-            observeMeta(this, ctrler, false);
+            const propsRenderer = createPropertiesDeferredRenderer(ctrler, this.renderer);
 
-            // UI...
-            watchProperty(ctrler, "scores", () => {
+            initializeMetaRendering(this, propsRenderer, false);
+
+            propsRenderer.bind("scores", () => {
+
                 const scores = ctrler.properties.scores;
                 
                 for(let i = 0; i < fields.length; ++i) {

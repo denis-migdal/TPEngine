@@ -4,7 +4,9 @@ import { Value } from "MWL@2026:Reactive/Properties/Controllers";
 import { WithProperties } from "MWL@2026:Reactive/Properties/createProperties";
 import { syncProperties } from "MWL@2026:Reactive/Properties/linkProperties";
 
-import { baseStyle, observeMeta, QProperties } from "../core/base";
+import { baseStyle, initializeMetaRendering, QProperties } from "../core/base";
+
+import createPropertiesDeferredRenderer from "MWL@2026:DOM/FrameScheduler/defer/createPropertiesDeferredRenderer";
 
 // we assume empty string = null, avoid handling this special case.
 export const QTextProperties = {
@@ -31,8 +33,8 @@ export default defineWebComponent({
                                 answer: "text"
                             });
 
-            // we could use taskTrigger() here...
-            // watchMeta (?).
-            observeMeta(this, ctrler, true);
+            const propsRenderer = createPropertiesDeferredRenderer(ctrler, this.renderer);
+                            
+            initializeMetaRendering(this, propsRenderer, true);
         }
     });

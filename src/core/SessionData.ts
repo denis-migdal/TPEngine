@@ -65,8 +65,6 @@ export default class SessionData implements Serializable {
         if( this.corrige === null || this.subjectURL === null)
             throw new Error("Can't export when no sessionData loaded!");
 
-        console.warn("export", this.rendus);
-
         const zip = new JSZip();
 
         zip.file("sujet.url", this.subjectURL );
@@ -74,7 +72,6 @@ export default class SessionData implements Serializable {
 
         for( const student in this.rendus ) {
             const rendu = this.rendus[student];
-            console.warn(student, rendu.getQuestionData("12345678")?.answer);
             zip.file(rendu.resourceName, await rendu.export() );
         }
 

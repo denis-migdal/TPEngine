@@ -19,6 +19,7 @@ export type Question<T extends unknown> = Properties<QuestionData<T>>;
 
 export default class StudentWork implements Serializable {
 
+    //TODO: use null...
     resourceName = "unnamed";
 
     private data: Record<string, QuestionData<unknown>> = {};

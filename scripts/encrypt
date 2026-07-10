@@ -4,10 +4,30 @@
 
 const inputFile = Deno.args[0];
 const outputFile = Deno.args[1] ?? `${inputFile}.enc`
+const keyFile = `${outputFile}.key`;
+
+let keyBytes;
+try {
+    const key = await Deno.readTextFile(keyFile);
+
+    function hexToBytes(hex: string): ArrayBuffer {
+        return new Uint8Array(
+            hex.match(/.{2}/g)!.map((b) => parseInt(b, 16)),
+        ).buffer;
+    }
+
+    keyBytes = hexToBytes(key);
+} catch(e) {
+
+    keyBytes = crypto.getRandomValues(new Uint8Array(32)); // AES-256
+    
+    const key = [...keyBytes].map(b => b.toString(16).padStart(2, "0")).join("");
+
+    await Deno.writeFile(keyFile, key);
+}
 
 const data = await Deno.readFile(inputFile);
 
-const keyBytes = crypto.getRandomValues(new Uint8Array(32)); // AES-256
 const iv = crypto.getRandomValues(new Uint8Array(12));       // GCM recommandé
 
 const key = await crypto.subtle.importKey(
@@ -35,8 +55,3 @@ output.set(iv, 0);
 output.set(new Uint8Array(encrypted), iv.length);
 
 await Deno.writeFile(outputFile, output);
-
-console.log(
-  "Clé AES-256 :",
-  [...keyBytes].map(b => b.toString(16).padStart(2, "0")).join(""),
-);
