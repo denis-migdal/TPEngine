@@ -1,5 +1,5 @@
-import html from "MWL@2026:DOM/ShadowTemplate/parsers/html";
-import { observeChanges } from "MWL@2026:Reactive/Observers/observe";
+import { html } from "MWL@2026:exports/DOM";
+import { listen } from "MWL@2026:exports/Reactive/Events";
 import BrowserFile from "TPEngine@2026:core/DataStore/BrowserFile";
 import { QuestionElement, SubjectPage } from "TPEngine@2026:core/SubjectPage";
 
@@ -111,7 +111,7 @@ exportBtn.addEventListener("click", exporter);
 // auto-save into a file (easier to manage in case of issue during DS).
 
 if( isDS) {
-    observeChanges(subject.studentWork, async () => {
+    listen(subject.studentWork, async () => {
 
         const buffer = await subject.studentWork.export();
 

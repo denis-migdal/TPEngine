@@ -1,7 +1,6 @@
-import defineWebComponent from "MWL@2026:DOM/WebComponent/defineWebComponent";
-import { Signal, Value } from "MWL@2026:Reactive/Properties/Controllers";
-import { WithProperties } from "MWL@2026:Reactive/Properties/createProperties";
-import { deferredObserve } from "MWL@2026:DOM/FrameScheduler/defer/deferredObserve";
+import {createPropertiesDeferredRenderer, defineWebComponent} from "MWL@2026:exports/DOM/WebComponent";
+import { Signal, Value } from "MWL@2026:exports/Reactive/Properties/controllers";
+import { WithProperties } from "MWL@2026:exports/Reactive/Properties/";
 
 const Pager = defineWebComponent({
         name      : "wc-pager",
@@ -34,10 +33,14 @@ const Pager = defineWebComponent({
         },
         initialize(ctrler) {
 
-            deferredObserve(ctrler, this.renderer, () => {
+            const renderer = createPropertiesDeferredRenderer(ctrler, this.renderer);
+
+            renderer.bind("cur", () => {
                 this.elements.curText.textContent = `${ctrler.properties.cur+1}`;
+            })
+            renderer.bind("max", () => {
                 this.elements.maxText.textContent = `${ctrler.properties.max}`;
-            });
+            })
 
             // should be in controller but osef.
             this.elements.prevBtn.addEventListener("click",

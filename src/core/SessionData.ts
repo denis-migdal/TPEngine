@@ -1,12 +1,12 @@
-import { createEvent } from "MWL@2026:Reactive/Event";
-import { Observer } from "MWL@2026:Reactive/Observers/Observer";
-import { MAIN_EVENT, trigger } from "MWL@2026:Reactive/Observers/EventSource";
+import { trigger, ObservableObject } from "MWL@2026:exports/Reactive/Events";
+import { Observer } from "MWL@2026:exports/Reactive/observers";
 
 import JSZip from "jszip";
 import { Serializable } from "./DataStore/core/interfaces";
 import StudentWork from "./StudentWork";
 
-export default class SessionData implements Serializable {
+export default class SessionData extends ObservableObject
+                                implements Serializable {
 
     resourceName = "";
 
@@ -51,7 +51,7 @@ export default class SessionData implements Serializable {
                 continue;
             }
 
-            this.observer.observeChanges(answers);
+            this.observer.listen(answers);
 
             // TODO: from Moodle + verif RNG/IP.
             const studentID = filename.split('_')[2].slice(0,-8);
@@ -77,7 +77,5 @@ export default class SessionData implements Serializable {
 
         return await zip.generateAsync({type:"arraybuffer"}) as ArrayBuffer;
     }
-
-    readonly [MAIN_EVENT] = createEvent(this);
 }
 

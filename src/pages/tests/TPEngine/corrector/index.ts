@@ -1,7 +1,9 @@
-import { resolve } from "MWL@2026:DOM/ElementsResolver";
-import { observeChanges } from "MWL@2026:Reactive/Observers/observe";
-import ObserverRegistry from "MWL@2026:Reactive/Observers/ObserverRegistry";
-import { updateProperties } from "MWL@2026:Reactive/Properties/createProperties";
+import { listen }           from "MWL@2026:exports/Reactive/Events";
+import { updateProperties } from "MWL@2026:exports/Reactive/Properties";
+import {ObservationArena}   from "MWL@2026:exports/Reactive/observers";
+import { resolve }          from "MWL@2026:exports/DOM";
+
+
 import BrowserFile from "TPEngine@2026:core/DataStore/BrowserFile";
 import LocalStorage from "TPEngine@2026:core/DataStore/LocalStorage";
 import Pager from "TPEngine@2026:core/Pager";
@@ -32,7 +34,7 @@ function updateSubjectPage(url: string, corrige: ArrayBuffer) {
 }
 
 // set subject...
-observeChanges(session, async function() {
+listen(session, async function() {
     if( this.origin !== localStore && this.origin !== file )
         return;
 
@@ -52,7 +54,7 @@ observeChanges(session, async function() {
 const localStore = new LocalStorage(session, "corrector.sav");
 await localStore.load();
 
-observeChanges(session, async function() {
+listen(session, async function() {
     if( this.origin === localStore) return;
 
     await localStore.save();
@@ -63,9 +65,9 @@ elems.importBtn.addEventListener("click", () => file.load() );
 elems.exportBtn.addEventListener("click", () => file.save() );
 
 
-const observers = new ObserverRegistry();
+const arena = new ObservationArena();
 
-observeChanges(elems.pager, () => {
+listen(elems.pager, () => {
 
     const QID = session.corrige!.getQuestionID( elems.pager.properties.cur );
     
@@ -76,7 +78,7 @@ observeChanges(elems.pager, () => {
 
     const fields = new Array<HTMLElement>();
 
-    observers.clear();
+    arena.clear();
 
     //TODO: merge...
     for(const student in session.rendus) {
@@ -86,7 +88,7 @@ observeChanges(elems.pager, () => {
 
         const qg = new QGText(answer as any);
 
-        observers.observeChanges(qg, () => {
+        arena.listen(qg, () => {
             // @ts-ignore
             rendu.setQuestionData(qg.properties, observers)
         });

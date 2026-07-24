@@ -1,5 +1,5 @@
-import { observe, observeChanges } from "MWL@2026:Reactive/Observers/observe";
-import { updateProperties, WithProperties } from "MWL@2026:Reactive/Properties/createProperties";
+import { observe, listen } from "MWL@2026:exports/Reactive/Events";
+import { updateProperties, WithProperties } from "MWL@2026:exports/Reactive/Properties";
 
 import StudentWork, { Question } from "./StudentWork";
 
@@ -49,7 +49,7 @@ export class SubjectPage {
 
         const pthis = this;
         
-        observeChanges(this.studentWork, async function() {
+        listen(this.studentWork, async function() {
             if(  ! pthis.localStoreEnabled
                 && this.origin === localStore) return;
         
@@ -72,7 +72,7 @@ export class SubjectPage {
                 continue;
             }
 
-            observeChanges(questions[i], function() {
+            listen(questions[i], function() {
                 if( this.origin === work) return;
     
                 // this is easier to use the same origin.

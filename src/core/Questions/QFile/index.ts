@@ -1,11 +1,9 @@
-import defineWebComponent from "MWL@2026:DOM/WebComponent/defineWebComponent";
-import { Fixed } from "MWL@2026:Reactive/Properties/Controllers";
-import { WithProperties } from "MWL@2026:Reactive/Properties/createProperties";
+import {defineWebComponent, createPropertiesDeferredRenderer} from "MWL@2026:exports/DOM/WebComponent";
+import { WithProperties } from "MWL@2026:exports/Reactive/Properties";
+import { Fixed } from "MWL@2026:exports/Reactive/Properties/controllers";
 
 import { baseStyle, initializeMetaRendering, QProperties } from "../core/base";
 import { upload } from "TPEngine@2026:core/DataStore/core/upload";
-
-import createPropertiesDeferredRenderer from "MWL@2026:DOM/FrameScheduler/defer/createPropertiesDeferredRenderer";
 
 // TODO: could find a more optimal structure ?
 export type QFileAnswer = {
@@ -54,7 +52,6 @@ export default defineWebComponent({
 
             this.elements.uploadBtn.addEventListener("click", async () => {
 
-                console.warn(ctrler.properties.accept);
                 const file = (await upload(ctrler.properties.accept))!;
                 
                 ctrler.properties.answer = {

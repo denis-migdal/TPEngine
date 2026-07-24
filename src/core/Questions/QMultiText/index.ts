@@ -1,20 +1,18 @@
-import defineWebComponent from "MWL@2026:DOM/WebComponent/defineWebComponent";
-import { WithProperties } from "MWL@2026:Reactive/Properties/createProperties";
+import { html } from "MWL@2026:exports/DOM/";
+import { defineWebComponent, createPropertiesDeferredRenderer } from "MWL@2026:exports/DOM/WebComponent";
+import { updateProperties, WithProperties } from "MWL@2026:exports/Reactive/Properties";
+import { Fixed, Value, View } from "MWL@2026:exports/Reactive/Properties/controllers";
+import CodeEditor from "MWL@2026:components/code/code-editor";
+
 import { baseStyle, initializeMetaRendering, QProperties, updateGradeColor } from "../core/base";
-import { Computed, Fixed, Value } from "MWL@2026:Reactive/Properties/Controllers";
-import CodeEditor from "MWL@2026:Components/code/code-editor";
-import html from "MWL@2026:DOM/ShadowTemplate/parsers/html";
-import { watchProperty, watchPropertyChanges } from "MWL@2026:Reactive/Properties/watchProperties";
-import { setProperty } from "MWL@2026:Reactive/Properties/createProperties";
-import createPropertiesDeferredRenderer from "MWL@2026:DOM/FrameScheduler/defer/createPropertiesDeferredRenderer";
+import { listen, observe } from "MWL@2026:core/Reactive/Observers";
 
 export const QMultiTextProperties = {
     ...QProperties<null|readonly string[]>(null),
     nbFields: Fixed(2),
     nbCols  : Fixed<number|null>(null),
     scores  : Value<readonly number[]|null>(null),
-    score   : Computed( (ctx: {scores: readonly number[]|null}) => {
-        const scores = ctx.scores;
+    score   : View("scores", (scores: readonly number[]|null) => {
 
         if( scores === null)
             return null;
@@ -54,30 +52,10 @@ export default defineWebComponent({
 
                 fields[i] = field;
                 this.elements.answersList.append( item, field );
-
-                // bind properties (not UI).
-                watchPropertyChanges(fields[i], "text", function() {
-                    if( this.origin === ctrler) return;
-
-                    const newAnswer = new Array<string>(nbFields);
-                    for(let i = 0; i < nbFields; ++i)
-                        newAnswer[i] = fields[i].properties.text;
-
-                    setProperty(ctrler, "answer", newAnswer);
-                });
             }
 
-            // bind properties (not UI).
-            watchProperty(ctrler, "answer", function() {
-                if( this.origin === fields ) return;
-
-                const answer = ctrler.properties.answer;
-
-                for(let i = 0; i < fields.length; ++i)
-                    setProperty(fields[i],
-                                "text", answer === null ? "" : answer[i],
-                                ctrler);
-            })
+            // sync properties (not UI).
+            syncArray(ctrler, fields);
 
             // UI...
             const propsRenderer = createPropertiesDeferredRenderer(ctrler, this.renderer);
@@ -94,3 +72,37 @@ export default defineWebComponent({
             });
         }
     });
+
+//TODO: necessitate:
+    // List sync
+    // Properties sync.
+function syncArray(     list: WithProperties<{answer: readonly string[]|null}>,
+                    elements: readonly WithProperties<{text: string}>[]) {
+
+    // should watch "answer"
+    for(let i = 0; i < elements.length; ++i) {
+        listen(elements[i], function() {
+
+            if( this.origin === list) return;
+
+            const newAnswer = new Array<string>(elements.length);
+            for(let i = 0; i < elements.length; ++i)
+                newAnswer[i] = elements[i].properties.text;
+
+            updateProperties(list, {answer: newAnswer}, elements);
+        });
+    }
+
+    // should watch "answer"
+    observe(list, function() {
+
+        if( this.origin === elements ) return;
+
+        const answer = list.properties.answer;
+
+        for(let i = 0; i < elements.length; ++i)
+            updateProperties(elements[i],
+                        {text: answer === null ? "" : answer[i]},
+                        list);
+    });
+}

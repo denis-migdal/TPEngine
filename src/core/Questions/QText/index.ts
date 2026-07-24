@@ -1,12 +1,10 @@
-import CodeEditor from "MWL@2026:Components/code/code-editor";
-import defineWebComponent from "MWL@2026:DOM/WebComponent/defineWebComponent";
-import { Value } from "MWL@2026:Reactive/Properties/Controllers";
-import { WithProperties } from "MWL@2026:Reactive/Properties/createProperties";
-import { syncProperties } from "MWL@2026:Reactive/Properties/linkProperties";
+import CodeEditor from "MWL@2026:components/code/code-editor";
+import { defineWebComponent, createPropertiesDeferredRenderer } from "MWL@2026:exports/DOM/WebComponent";
+import { Value } from "MWL@2026:exports/Reactive/Properties/controllers";
+import { WithProperties } from "MWL@2026:exports/Reactive/Properties/";
 
 import { baseStyle, initializeMetaRendering, QProperties } from "../core/base";
-
-import createPropertiesDeferredRenderer from "MWL@2026:DOM/FrameScheduler/defer/createPropertiesDeferredRenderer";
+import { syncProperties } from "MWL@2026:exports/Reactive/Properties/sync";
 
 // we assume empty string = null, avoid handling this special case.
 export const QTextProperties = {
