@@ -5,10 +5,11 @@ import { resolve }          from "MWL@2026:exports/DOM";
 
 
 import BrowserFile from "TPEngine@2026:core/DataStore/BrowserFile";
-import LocalStorage from "TPEngine@2026:core/DataStore/LocalStorage";
 import Pager from "TPEngine@2026:core/Pager";
 import QGText from "TPEngine@2026:core/QuestionGrader/QText";
 import SessionData from "TPEngine@2026:core/SessionData";
+import IndexDB from "TPEngine@2026:core/DataStore/IndexDB";
+import { QuestionData } from "TPEngine@2026:core/StudentWork";
 
 const elems = resolve(document.body, {
                         importBtn  : HTMLElement,
@@ -51,12 +52,24 @@ listen(session, async function() {
 })
 
 //TODO...
-const localStore = new LocalStorage(session, "corrector.sav");
-await localStore.load();
+const localStore = new IndexDB(session, "corrector");
+
+const curSession = localStorage.getItem("TPEngine.corrector.cur");
+if( curSession !== null) {
+    await localStore.load(curSession);
+}
 
 listen(session, async function() {
+
+    if( this.origin === file)
+        localStore.target.resourceName = session.subjectURL!;
     if( this.origin === localStore) return;
 
+    // avoid data loss (e.g. loading another before exporting current one)
+    localStorage.setItem(
+                        "TPEngine.corrector.cur",
+                        localStore.target.resourceName
+                    );
     await localStore.save();
 });
 
@@ -89,8 +102,8 @@ listen(elems.pager, () => {
         const qg = new QGText(answer as any);
 
         arena.listen(qg, () => {
-            // @ts-ignore
-            rendu.setQuestionData(qg.properties, observers)
+            const qdata = qg.properties as QuestionData<unknown>;
+            rendu.setQuestionData(qdata, arena);
         });
 
         fields.push( qg );

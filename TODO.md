@@ -1,5 +1,4 @@
 TODO:
-- use PropertyRenderer.
 - register current name in localStorage instead of storing it with the filename ?
 - corrector
     - use IDB

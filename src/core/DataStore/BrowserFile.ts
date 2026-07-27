@@ -12,7 +12,7 @@ export default class BrowserFile extends DataStore {
                 extension    : string,
                 defaultName  : string|null = null) {
         super(target);
-        this.extension = extension;
+        this.extension   = extension;
         this.defaultName = defaultName;
     }
 
@@ -28,7 +28,10 @@ export default class BrowserFile extends DataStore {
 
     override async write(buffer: ArrayBuffer) {
         
-        download( buffer, this.defaultName ?? this.target.resourceName,
-                    this.extension);
+        download(
+                    buffer,
+                    this.defaultName ?? this.target.resourceName,
+                    this.extension
+                );
     }
 }

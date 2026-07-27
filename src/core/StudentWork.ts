@@ -4,7 +4,7 @@ import { Properties  } from "MWL@2026:exports/Reactive/Properties";
 import JSZip from "jszip";
 import { Serializable } from "./DataStore/core/interfaces";
 
-type QuestionData<T extends unknown> = {
+export type QuestionData<T extends unknown> = {
     QID    : string,
     comment: string,
     score  : number|null,

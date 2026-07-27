@@ -40,12 +40,10 @@ export class SubjectPage {
 
     async initLocalStore() {
 
-        //const localStore = new LocalStore(this.studentWork,
-        //                                    location.pathname);
         const localStore = new IndexDB(this.studentWork,
-                                       location.pathname);
+                                       "studentWork");
 
-        await localStore.load();
+        await localStore.load(location.pathname);
 
         const pthis = this;
         
@@ -53,7 +51,7 @@ export class SubjectPage {
             if(  ! pthis.localStoreEnabled
                 && this.origin === localStore) return;
         
-            await localStore.save();
+            await localStore.save(location.pathname);
         });
     }
 

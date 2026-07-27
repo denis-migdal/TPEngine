@@ -1,4 +1,4 @@
-import { buffer2str, str2buffer } from "./core/buffer";
+import { str2buffer } from "./core/buffer";
 import { DataStore, Serializable } from "./core/interfaces";
 
 // thanks ChatGPT...
@@ -65,36 +65,40 @@ class IDB<T = ArrayBuffer> {
 
 export default class IndexDB extends DataStore {
 
-    readonly key: string;
     //TODO: ArrayBuffer would be better...
-    readonly idb = new IDB<string>("TPEngine", "answers");
+    readonly idb;
 
-    constructor(target: Serializable, key: string) {
+    constructor(target: Serializable, name: string) {
         super(target);
-        this.key = key;
+
+        // we are forced to use a different dbName in order to have
+        // proper/independent upgrade.
+        this.idb = new IDB<string|ArrayBuffer>(name, name);
     }
 
-    override async read(): Promise<ArrayBuffer|null> {
+    override async read(key: string): Promise<ArrayBuffer|null> {
 
-        const result = await this.idb.get(this.key);
+        const result = await this.idb.get(key);
         if( result === null )
             return null;
 
-        //TODO: re-réfléchir au filename enregistré.
-        // -> stocker "current key" dans localStorage ?
-        const data = JSON.parse(result);
-        this.target.resourceName = data.name; // meh
+        // old version.
+        if( ! (result instanceof ArrayBuffer) )
+            return str2buffer(JSON.parse(result).value);
 
-        return str2buffer(data.value);
+        this.target.resourceName = key;
+
+        return result;
     }
 
-    override async write(buffer: ArrayBuffer) {
+    override async write(buffer: ArrayBuffer, key: string) {
         
+        /*
         const data = JSON.stringify({
             name : this.target.resourceName,
             value: buffer2str(buffer)
-        });
+        });*/
 
-        await this.idb.put(this.key, data);
+        await this.idb.put(key, buffer);
     }
 }

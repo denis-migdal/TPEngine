@@ -1,34 +1,28 @@
 import { buffer2str, str2buffer } from "./core/buffer";
 import { DataStore, Serializable } from "./core/interfaces";
 
+//TODO: rework...
 export default class LocalStorage extends DataStore {
 
-    readonly key: string;
+    readonly prefix: string;
 
-    constructor(target: Serializable, key: string) {
+    constructor(target: Serializable, prefix: string) {
         super(target);
-        this.key = key;
+        this.prefix = prefix;
     }
 
-    override async read(): Promise<ArrayBuffer|null> {
+    override async read(key: string): Promise<ArrayBuffer|null> {
 
-        const result = localStorage.getItem(this.key);
+        const result = localStorage.getItem(`${this.prefix}:${key}`);
         if(result === null)
             return null;
 
-        const data = JSON.parse(result);
-        this.target.resourceName = data.name; // meh
+        this.target.resourceName = key;
 
-        return str2buffer(data.value);
+        return str2buffer(result);
     }
 
-    override async write(buffer: ArrayBuffer) {
-        
-        const data = JSON.stringify({
-            name : this.target.resourceName,
-            value: buffer2str(buffer)
-        });
-
-        localStorage.setItem(this.key, data);
+    override async write(buffer: ArrayBuffer, key: string) {
+        localStorage.setItem(`${this.prefix}:${key}`, buffer2str(buffer));
     }
 }

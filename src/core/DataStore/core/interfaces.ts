@@ -15,19 +15,22 @@ export abstract class DataStore {
 
     // returns false if wasn't able to read.
     // e.g. localStorage doesn't exists, operation canceled, etc.
-    async load(): Promise<void|false> {
+    async load(key: string = this.target.resourceName): Promise<void|false> {
 
-        const buffer = await this.read();
+        const buffer = await this.read(key);
         if( buffer === null) return false;
 
         await this.target.import( buffer, this );
     }
-    async save() {
-        await this.write( await this.target.export() );
+    async save(key: string = this.target.resourceName) {
+        await this.write(
+                            await this.target.export(),
+                            key
+                        );
     }
 
     // low level - mainly for test/debug purpose.
     // be careful, can modify/use target.ressourceName !
-    protected abstract read(): Promise<ArrayBuffer|null>;
-    protected abstract write(buffer: ArrayBuffer): Promise<void>;
+    protected abstract read(key: string): Promise<ArrayBuffer|null>;
+    protected abstract write(buffer: ArrayBuffer, key:string): Promise<void>;
 }
