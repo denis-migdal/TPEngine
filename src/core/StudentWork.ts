@@ -1,4 +1,4 @@
-import { ObservableObject, trigger } from "MWL@2026:exports/Reactive/Events";
+import { ObservableObject, ObservableProxy, trigger } from "MWL@2026:exports/Reactive/Events";
 import { Properties  } from "MWL@2026:exports/Reactive/Properties";
 
 import JSZip from "jszip";
@@ -16,40 +16,19 @@ export type QuestionData<T extends unknown> = {
 export type Question<T extends unknown> = Properties<QuestionData<T>>;
 
 
-export default class StudentWork extends ObservableObject
-                                 implements Serializable {
+export default class StudentWork
+                        extends ObservableProxy<Dict<QuestionData<unknown>>>
+                        implements Serializable {
 
     //TODO: use null...
     resourceName = "unnamed";
 
-    private data: Record<string, QuestionData<unknown>> = {};
+    readonly questions;
 
-    get nbQuestions() {
-        return Object.keys(this.data).length;
-    }
-
-    getQuestionID(i: number) {
-        return Object.keys(this.data)[i];
-    }
-
-    // mainly used for test/debug purpose.
-    setQuestionsData(data: readonly QuestionData<unknown>[], origin: unknown) {
-
-        this.data = {};
-        for(let i = 0; i < data.length; ++i)
-            this.data[data[i].QID] = data[i];
-
-        trigger(this, origin);
-    }
-
-    setQuestionData(data: QuestionData<unknown>, origin: unknown) {
-
-        this.data[data.QID] = data;
-        trigger(this, origin);
-    }
-
-    getQuestionData(qid: string): QuestionData<unknown>|null {
-        return this.data[qid] ?? null;
+    constructor() {
+        const questions = new Dict<QuestionData<unknown>>();
+        super(questions);
+        this.questions = questions;
     }
 
     async import(buffer: ArrayBuffer, origin: unknown) {
@@ -58,14 +37,48 @@ export default class StudentWork extends ObservableObject
         await zip.loadAsync(buffer);
 
         const file = zip.file("answers")!;
-        this.data = JSON.parse( await file.async("string") ); // as X
+        const data = JSON.parse( await file.async("string") ); // as X
 
-        trigger(this, origin);
+        /*
+        this.questions.clear();
+        for(const key in data)
+            this.questions.set(key, data[key], this);
+        */
+
+        // h4ck
+        this.questions.data = data;
+        trigger(this.questions, origin);
     }
     async export() {
         const zip = new JSZip();
-        zip.file("answers", JSON.stringify(this.data, null, '\t') );
+        zip.file("answers", JSON.stringify(this.questions.data, null, '\t') );
 
         return await zip.generateAsync({type:"arraybuffer"}) as ArrayBuffer;
+    }
+}
+
+//TODO: move.
+class Dict<T> extends ObservableObject {
+
+    data: Record<string, T> = {};
+
+    get(key: string): T|null {
+        const entry = this.data[key];
+        if(entry === undefined) return null;
+        return entry;
+    }
+    set(key: string, value: T, origin: unknown = null) {
+        this.data[key] = value;
+        trigger(this, origin);
+    }
+
+    clear() {
+        this.data = {};
+    }
+    keys() {
+        return Object.keys(this.data);
+    }
+    values() {
+        return Object.values(this.data);
     }
 }

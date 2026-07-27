@@ -1,7 +1,6 @@
-- StudentWork
-    - refactor questionData (un peu bancal).
-
 - corrector
+    - rendus => use Dict + sep Events : rendus = change / SessionData = load.
+    - load from stored SessionData in IDB.
     - QMultiText & QFile
     - answers page
         - merge identical answers

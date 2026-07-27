@@ -1,10 +1,10 @@
 import { observe, listen } from "MWL@2026:exports/Reactive/Events";
-import { updateProperties, WithProperties } from "MWL@2026:exports/Reactive/Properties";
+import { Properties, updateProperties, WithProperties } from "MWL@2026:exports/Reactive/Properties";
 
-import StudentWork, { Question } from "./StudentWork";
+import StudentWork, { Question } from "../StudentWork";
 
 import "TPEngine@2026:core/Questions/";
-import IndexDB from "./DataStore/IndexDB";
+import IndexDB from "../DataStore/IndexDB";
 
 export type QuestionElement = HTMLElement & WithProperties<Question<unknown>>;
 
@@ -57,41 +57,15 @@ export class SubjectPage {
 
     initQuestions() {
 
-        const work = this.studentWork;
-
         const questions = this.questions.map( q => q.properties);
 
-        for(let i = 0; i < questions.length; ++i) {
-
+        for(let i = 0; i < questions.length; ++i)
             if( questions[i].QID === null) {
-               
                 console.warn("Question needs a QID !\n", genQID());
-
                 continue;
             }
 
-            listen(questions[i], function() {
-                if( this.origin === work) return;
-    
-                // this is easier to use the same origin.
-                work.setQuestionData(questions[i], questions);
-            });
-        }
-    
-        observe(work, function () {
-    
-            if( this.origin === questions ) return;
-    
-            for(let i = 0; i < questions.length; ++i) {
-    
-                const data = work.getQuestionData(questions[i].QID);
-                if( data === null )
-                    continue;
-    
-                // QID & coeff are fixed, won't be updated.
-                updateProperties(questions[i], data, work);
-            }
-        });
+        syncArray(this.studentWork, questions);
     }
 
     initHighlight() {
@@ -127,4 +101,39 @@ export class SubjectPage {
             behavior: "instant"
         });
     }
+}
+
+function syncArray(     list: StudentWork,
+                    elements: readonly Properties<Question<unknown>>[]) {
+
+    for(let i = 0; i < elements.length; ++i) {
+
+        if( elements[i].QID === null) {
+            console.warn("Question needs a QID !\n", genQID());
+            continue;
+        }
+
+        listen(elements[i], function() {
+            if( this.origin === list) return;
+
+            // this is easier to use the same origin.
+            list.questions.set(elements[i].QID, elements[i], elements);
+        });
+    }
+
+    // we could do it only upon load.
+    observe(list, function () {
+
+        if( this.origin === elements ) return;
+
+        for(let i = 0; i < elements.length; ++i) {
+
+            const data = list.questions.get(elements[i].QID);
+            if( data === null )
+                continue;
+
+            // QID & coeff are fixed, won't be updated.
+            updateProperties(elements[i], data, list);
+        }
+    });
 }

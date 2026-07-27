@@ -2,8 +2,8 @@ import { trigger, ObservableObject } from "MWL@2026:exports/Reactive/Events";
 import { Observer } from "MWL@2026:exports/Reactive/observers";
 
 import JSZip from "jszip";
-import { Serializable } from "./DataStore/core/interfaces";
-import StudentWork from "./StudentWork";
+import { Serializable } from "../DataStore/core/interfaces";
+import StudentWork from "../StudentWork";
 
 export default class SessionData extends ObservableObject
                                 implements Serializable {

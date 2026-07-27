@@ -4,25 +4,30 @@ import {ObservationArena}   from "MWL@2026:exports/Reactive/observers";
 import { resolve }          from "MWL@2026:exports/DOM";
 
 import BrowserFile from "TPEngine@2026:core/DataStore/BrowserFile";
-import Pager from "TPEngine@2026:core/Pager";
+import Pager from "TPEngine@2026:core/Corrector/Pager";
 import QGText from "TPEngine@2026:core/QuestionGrader/QText";
-import SessionData from "TPEngine@2026:core/SessionData";
+import SessionData from "TPEngine@2026:core/Corrector/SessionData";
 import IndexDB from "TPEngine@2026:core/DataStore/IndexDB";
 import { QuestionData } from "TPEngine@2026:core/StudentWork";
 import { download } from "TPEngine@2026:core/DataStore/core/download";
+import Filter from "TPEngine@2026:core/Corrector/Filter";
 
 const elems = resolve(document.body, {
-                        importBtn   : HTMLElement,
-                        exportBtn   : HTMLElement,
-                        csvExportBtn: HTMLElement,
-                        iframe      : HTMLIFrameElement,
-                        pager       : Pager,
-                        answersArea : HTMLElement,
+                        importBtn      : HTMLElement,
+                        exportBtn      : HTMLElement,
+                        csvExportBtn   : HTMLElement,
+                        iframe         : HTMLIFrameElement,
+                        pager          : Pager,
+                        answersArea    : HTMLElement,
+                        studentFilter  : HTMLElement,
+                        studentFilterCA: HTMLInputElement,
                     });
 
 ///////
 // Session
 ///////
+
+const filter = new Filter(elems.studentFilter, elems.studentFilterCA);
 
 const session = new SessionData();
 
@@ -48,11 +53,10 @@ listen(session, async function() {
 
     updateProperties(elems.pager, {
         cur: 0,
-        max: session.corrige!.nbQuestions,
+        max: session.corrige!.questions.keys().length,
     });
-    /*
-        this.#filter.updateFilter(content.rendus.map( r => r.student_id ));
-    */
+
+    filter.updateList(Object.keys(session.rendus));
 })
 
 ///////
@@ -99,8 +103,8 @@ elems.csvExportBtn.addEventListener("click", () => {
 
     const corrige = session.corrige!;
     const questions: Record<string, number|null> = {};
-    for(let i = 0; i < corrige.nbQuestions; ++i) {
-        const q = corrige.getQuestionData( corrige.getQuestionID(i) )!;
+    for(const key in corrige.questions.keys() ) {
+        const q = corrige.questions.get(key)!;
         questions[q.QID] = q.coeff;
         data += `\t${q.QID} /${q.coeff ?? 0}`;
     }
@@ -122,7 +126,7 @@ elems.csvExportBtn.addEventListener("click", () => {
         let sum    = 0;
 
         for(const qid in questions) {
-            const answer = rendu.getQuestionData(qid);
+            const answer = rendu.questions.get(qid);
 
             if(answer === null || answer.score === null) {
                 details += "\t";
@@ -148,18 +152,21 @@ elems.csvExportBtn.addEventListener("click", () => {
 // Navigation
 ///////
 
-const arena = new ObservationArena();
+const arena  = new ObservationArena();
+let fields   = new Array<HTMLElement>();
 
 listen(elems.pager, () => {
 
-    const QID = session.corrige!.getQuestionID( elems.pager.properties.cur );
+    const IDS = session.corrige!.questions.keys();
+
+    const QID = IDS[elems.pager.properties.cur];
     
     elems.iframe.contentWindow?.postMessage({
                                                 type: "highlight",
                                                 value: QID
                                             }, "*");
 
-    const fields = new Array<HTMLElement>();
+    fields = [];
 
     arena.clear();
 
@@ -167,16 +174,31 @@ listen(elems.pager, () => {
     for(const student in session.rendus) {
         const rendu = session.rendus[student];
         
-        const answer = rendu.getQuestionData(QID);
+        const answer = rendu.questions.get(QID);
 
         const qg = new QGText(answer as any);
 
         arena.listen(qg, () => {
             const qdata = qg.properties as QuestionData<unknown>;
-            rendu.setQuestionData(qdata, arena);
+            rendu.questions.set(qdata.QID, qdata, arena);
         });
+
+        qg.dataset.studentName = student;
 
         fields.push( qg );
     }
+    updateAnswersVisibility();
     elems.answersArea.replaceChildren(...fields);
 });
+
+function updateAnswersVisibility() {
+
+    for(let i = 0; i < fields.length; ++i) {
+        const field = fields[i];
+        const name = field.dataset.studentName!;
+
+        field.classList.toggle("hidden",  ! filter.value[name]);
+    }
+}
+
+listen( filter, updateAnswersVisibility);

@@ -18,9 +18,13 @@ body {
         height: 100vh;
     }
 
-    #answers {
+    [data-wcid="answersArea"] {
         flex: 1 1 0px;
         overflow-y: auto;
+
+        .hidden {
+            display: none;
+        }
     }
 
     & > iframe {
@@ -39,7 +43,7 @@ body {
             background-color: light-dark(white, black);
             border: 1px solid gray;
 
-            & .students {
+            & [data-wcid="studentFilter"] {
                 display: grid;
                 grid-template-columns: repeat(4, 1fr);
             }
