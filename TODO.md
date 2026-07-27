@@ -1,14 +1,13 @@
-TODO:
-- register current name in localStorage instead of storing it with the filename ?
+- StudentWork
+    - refactor questionData (un peu bancal).
+
 - corrector
-    - use IDB
     - QMultiText & QFile
     - answers page
         - merge identical answers
         - filter out empty answers...
     - bug: first question highlight (iframe not loaded yet)
     - update corrige from subject iframe ?
-
 
 ## TODO
 
@@ -18,7 +17,7 @@ TODO:
 
 - corrector
     - merge & sort
-    - CSV export (to upload to Odin) [use coeff to compute final grade]
+    - CSV export (to upload to Odin)
         - Moodle ID to Odin ID conversion...
     - suspicious set flag
     - verif identical zip.
