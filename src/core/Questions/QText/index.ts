@@ -1,6 +1,6 @@
 import CodeEditor from "MWL@2026:components/code/code-editor";
 import { defineWebComponent, createPropertiesDeferredRenderer } from "MWL@2026:exports/DOM/WebComponent";
-import { Value } from "MWL@2026:exports/Reactive/Properties/controllers";
+import { Constant, Value } from "MWL@2026:exports/Reactive/Properties/controllers";
 import { WithProperties } from "MWL@2026:exports/Reactive/Properties/";
 
 import { baseStyle, initializeMetaRendering, QProperties } from "../core/base";
@@ -8,7 +8,8 @@ import { syncProperties } from "MWL@2026:exports/Reactive/Properties/sync";
 
 // we assume empty string = null, avoid handling this special case.
 export const QTextProperties = {
-    ...QProperties(""),
+    ...QProperties<string>(""),
+    type   : Constant<string>("QText"),
     lang   : Value<string|null>(null),
 }
 

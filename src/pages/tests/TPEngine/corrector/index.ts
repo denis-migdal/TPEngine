@@ -1,16 +1,16 @@
 import { listen }           from "MWL@2026:exports/Reactive/Events";
-import { updateProperties } from "MWL@2026:exports/Reactive/Properties";
+import { updateProperties, WithProperties } from "MWL@2026:exports/Reactive/Properties";
 import {ObservationArena}   from "MWL@2026:exports/Reactive/observers";
 import { resolve }          from "MWL@2026:exports/DOM";
 
 import BrowserFile from "TPEngine@2026:core/DataStore/BrowserFile";
 import Pager from "TPEngine@2026:core/Corrector/Pager";
-import QGText from "TPEngine@2026:core/QuestionGrader/QText";
 import SessionData from "TPEngine@2026:core/Corrector/SessionData";
 import IndexDB from "TPEngine@2026:core/DataStore/IndexDB";
 import { QuestionData } from "TPEngine@2026:core/StudentWork";
 import { download } from "TPEngine@2026:core/DataStore/core/download";
 import Filter from "TPEngine@2026:core/Corrector/Filter";
+import QuestionGraders from "TPEngine@2026:core/QuestionGrader";
 
 const elems = resolve(document.body, {
                         importBtn      : HTMLElement,
@@ -102,8 +102,9 @@ elems.csvExportBtn.addEventListener("click", () => {
     let data = "Name\tGrade";
 
     const corrige = session.corrige!;
+
     const questions: Record<string, number|null> = {};
-    for(const key in corrige.questions.keys() ) {
+    for(const key of corrige.questions.keys() ) {
         const q = corrige.questions.get(key)!;
         questions[q.QID] = q.coeff;
         data += `\t${q.QID} /${q.coeff ?? 0}`;
@@ -170,19 +171,26 @@ listen(elems.pager, () => {
 
     arena.clear();
 
+    const question = session.corrige!.questions.get(QID)!;
+
+    const QG = QuestionGraders[question.type as keyof typeof QuestionGraders];
+
     //TODO: merge...
     for(const student in session.rendus) {
         const rendu = session.rendus[student];
         
         const answer = rendu.questions.get(QID);
 
-        const qg = new QGText(answer as any);
+        const qg = new QG(answer as any) as
+                                        WithProperties<QuestionData<unknown>>
+                                      & HTMLElement;
 
         arena.listen(qg, () => {
-            const qdata = qg.properties as QuestionData<unknown>;
+            const qdata = qg.properties;
             rendu.questions.set(qdata.QID, qdata, arena);
         });
 
+        //TODO: [names]
         qg.dataset.studentName = student;
 
         fields.push( qg );

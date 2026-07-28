@@ -1,10 +1,10 @@
 - corrector
     - rendus => use Dict + sep Events : rendus = change / SessionData = load.
     - load from stored SessionData in IDB.
-    - QMultiText & QFile
+    - QGFile
     - answers page
         - merge identical answers
-        - filter out empty answers...
+        - sort answers
     - bug: first question highlight (iframe not loaded yet)
     - update corrige from subject iframe ?
 

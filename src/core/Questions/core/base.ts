@@ -3,8 +3,9 @@ import {PropertiesRenderer} from "MWL@2026:exports/Reactive/Properties";
 
 export function QProperties<T>(initialAnswer: T) {
     return {
+        type   : Fixed<string>(""),
         QID    : Fixed<string|null>(null),
-        comment: Value(""),
+        comment: Value<string>(""),
         answer : Value(initialAnswer),
         score  : Value<number|null>(null),
         coeff  : Fixed<number|null>(null),

@@ -5,6 +5,7 @@ import JSZip from "jszip";
 import { Serializable } from "./DataStore/core/interfaces";
 
 export type QuestionData<T extends unknown> = {
+    type   : string,
     QID    : string,
     comment: string,
     score  : number|null,

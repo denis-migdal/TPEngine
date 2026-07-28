@@ -1,6 +1,6 @@
 import {defineWebComponent, createPropertiesDeferredRenderer} from "MWL@2026:exports/DOM/WebComponent";
 import { WithProperties } from "MWL@2026:exports/Reactive/Properties";
-import { Fixed } from "MWL@2026:exports/Reactive/Properties/controllers";
+import { Constant, Fixed } from "MWL@2026:exports/Reactive/Properties/controllers";
 
 import { baseStyle, initializeMetaRendering, QProperties } from "../core/base";
 import { upload } from "TPEngine@2026:core/DataStore/core/upload";
@@ -14,6 +14,7 @@ export type QFileAnswer = {
 // we could also have a default URL...
 export const QFileProperties = {
     ...QProperties<QFileAnswer|null>(null),
+    type  : Constant<string>("QFile"),
     accept: Fixed<string>(".*"),
 }
 

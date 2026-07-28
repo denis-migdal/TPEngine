@@ -1,7 +1,7 @@
 import { html } from "MWL@2026:exports/DOM/";
 import { defineWebComponent, createPropertiesDeferredRenderer } from "MWL@2026:exports/DOM/WebComponent";
 import { updateProperties, WithProperties } from "MWL@2026:exports/Reactive/Properties";
-import { Fixed, Value, View } from "MWL@2026:exports/Reactive/Properties/controllers";
+import { Constant, Fixed, Value, View } from "MWL@2026:exports/Reactive/Properties/controllers";
 import CodeEditor from "MWL@2026:components/code/code-editor";
 
 import { baseStyle, initializeMetaRendering, QProperties, updateGradeColor } from "../core/base";
@@ -9,7 +9,8 @@ import { listen, observe } from "MWL@2026:core/Reactive/Observers";
 
 export const QMultiTextProperties = {
     ...QProperties<null|readonly string[]>(null),
-    nbFields: Fixed(2),
+    type    : Constant<string>("QMultiText"),
+    nbFields: Fixed<number>(2),
     nbCols  : Fixed<number|null>(null),
     scores  : Value<readonly number[]|null>(null),
     score   : View("scores", (scores: readonly number[]|null) => {

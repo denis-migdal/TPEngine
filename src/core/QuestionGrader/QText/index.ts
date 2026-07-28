@@ -3,12 +3,13 @@ import {defineWebComponent} from "MWL@2026:exports/DOM/WebComponent";
 import { updateProperties, WithProperties } from "MWL@2026:exports/Reactive/Properties";
 import { updateGradeColor } from "TPEngine@2026:core/Questions/core/base";
 import { QTextProperties }  from "TPEngine@2026:core/Questions/QText";
+import { baseStyle, initializeComment } from "../core/base";
 
 const QGText = defineWebComponent({
     name      : "qg-text",
     Controller: WithProperties(QTextProperties),
     content   : __LOAD_FILE__("./index.html"),
-    style     : __LOAD_FILE__("./index.css"),
+    style     : baseStyle,
     elements: {
         editor : CodeEditor,
         comment: HTMLInputElement,
@@ -17,12 +18,7 @@ const QGText = defineWebComponent({
     initialize(ctrler) {
 
         // no sync: WE are the one pushing changes.
-
-        const comment = this.elements.comment;
-        comment.value = ctrler.properties.comment;
-        comment.addEventListener("input", () => {
-            ctrler.properties.comment = comment.value;
-        });
+        initializeComment(this.elements.comment, ctrler);
 
         const scoreInput = this.elements.score;
 
