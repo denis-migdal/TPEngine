@@ -1,24 +1,20 @@
+- TODO
+    - page in Cours.
+    - sort answers
+
 - corrector
+    - QGFile
     - rendus => use Dict + sep Events : rendus = change / SessionData = load.
     - load from stored SessionData in IDB.
-    - QGFile
-    - answers page
-        - merge identical answers
-        - sort answers
-    - bug: first question highlight (iframe not loaded yet)
-    - update corrige from subject iframe ?
+    - merge identical answers (?).
 
-## TODO
+- bug
+    - first question highlight (iframe not loaded yet)
+
+- fraude
+    - calcul score de proximité.
+        -> longueur (au carré) parties communes après normalisation (supr mots <3 chars + espaces + ponctuation.)
+    - suspicious set flag.
+    - verif identical zip.
 
 - see branch master for previous version...
-
-- docs (?)
-
-- corrector
-    - merge & sort
-    - CSV export (to upload to Odin)
-        - Moodle ID to Odin ID conversion...
-    - suspicious set flag
-    - verif identical zip.
-    - if answer is equal to corrige : set grade 1 / if empty set grade 0...
-    - calculs de similarités entre copies ?
