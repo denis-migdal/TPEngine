@@ -9,8 +9,8 @@
         "outDir": "./build/TS",
 
         "paths": {
-            "MWL@2026:*"     : ["./libs/MWL@2026/src/*"],
-            "TPEngine@2026:*": ["./src/*"],
+            "MWL@2026/*"     : ["./libs/MWL@2026/src/*"],
+            "TPEngine@2026/*": ["./src/*"],
         }
     }
 }

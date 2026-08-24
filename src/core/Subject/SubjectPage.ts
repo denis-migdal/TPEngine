@@ -1,10 +1,10 @@
-import { observe, listen } from "MWL@2026:exports/Reactive/Events";
-import { Properties, updateProperties, WithProperties } from "MWL@2026:exports/Reactive/Properties";
+import { observe, listen } from "MWL@2026/exports/Reactive/Events";
+import { Properties, updateProperties, WithProperties } from "MWL@2026/exports/Reactive/Properties";
 
-import StudentWork, { Question } from "../StudentWork";
+import {StudentWork, Question } from "../StudentWork";
 
-import "TPEngine@2026:core/Questions/";
-import IndexDB from "../DataStore/IndexDB";
+import "TPEngine@2026/core/Questions/";
+import { IndexDB } from "../DataStore/IndexDB";
 
 export type QuestionElement = HTMLElement & WithProperties<Question<unknown>>;
 

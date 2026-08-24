@@ -3,7 +3,7 @@ import { download } from "./core/download";
 import { DataStore, Serializable } from "./core/interfaces";
 import { upload } from "./core/upload";
 
-export default class BrowserFile extends DataStore {
+export class BrowserFile extends DataStore {
 
     readonly extension: string;
     readonly defaultName: string|null = null;

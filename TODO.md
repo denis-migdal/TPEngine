@@ -1,15 +1,40 @@
+- QMultiText (tester).
+
+- MWL+TPEngine
+    - ATP cours (cf below)
+    - doc
+    - TODO
+    - remove old
+        - delete FrameScheduler/defer + delete WebComponent + old Properties.
+
+- Expand<>/expand() in MWL
+- Debug
+    - __LOG__() [only in __DEBUG__ + only during __START_LOG__ / __STOP_LOG__]
+        - console : beging/stop group.
+        - + possibilité de filter sur ID ?
+    - __SET_ID__(name) => this + [NAME]-[id] (?).
+    - propagation : represent tree -> how (with SET) ?
+
+- bindProperties : ensure keys type (hard).
+
+- ATP
+    -> (model/core si pas de lib...) -> ATP... (/src => de ce qu'on construit)
+        -> /build // /build/cache
+        -> model/tools (éventuellement).
+        -> ports/gui/?
+        -> ports/codec/?
+        -> pages/template (too) [TS/CSS].
+
+======================
+
 - TODO
+    - answers
+        - sort
+        - merge identical (?).
     - page in Cours.
-    - sort answers
 
 - corrector
-    - QGFile
-    - rendus => use Dict + sep Events : rendus = change / SessionData = load.
-    - load from stored SessionData in IDB.
-    - merge identical answers (?).
-
-- bug
-    - first question highlight (iframe not loaded yet)
+    - ARFile
 
 - fraude
     - calcul score de proximité.

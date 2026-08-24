@@ -1,9 +1,9 @@
-import {defineWebComponent, createPropertiesDeferredRenderer} from "MWL@2026:exports/DOM/WebComponent";
-import { WithProperties } from "MWL@2026:exports/Reactive/Properties";
-import { Constant, Fixed } from "MWL@2026:exports/Reactive/Properties/controllers";
+import {defineWebComponent, createPropertiesDeferredRenderer} from "MWL@2026/exports/DOM/WebComponent";
+import { WithProperties } from "MWL@2026/exports/Reactive/Properties";
+import { Constant, Fixed } from "MWL@2026/exports/Reactive/Properties/controllers";
 
 import { baseStyle, initializeMetaRendering, QProperties } from "../core/base";
-import { upload } from "TPEngine@2026:core/DataStore/core/upload";
+import { upload } from "TPEngine@2026/core/DataStore/core/upload";
 
 // TODO: could find a more optimal structure ?
 export type QFileAnswer = {
@@ -18,7 +18,7 @@ export const QFileProperties = {
     accept: Fixed<string>(".*"),
 }
 
-export default defineWebComponent({
+const QFile = defineWebComponent({
         name      : "q-file",
         Controller: WithProperties(QFileProperties),
         content: __LOAD_FILE__("./index.html"),
@@ -82,3 +82,5 @@ export default defineWebComponent({
             });
         }
     });
+
+export {QFile};

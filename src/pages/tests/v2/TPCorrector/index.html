@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf8"/>
+        <title>Correction</title>
+        <meta name="color-scheme" content="dark light">
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <!--<script  src="/skeleton/index.js"  type="module"     blocking="render"></script> -->
+        <script src ="index.js"  type="module"></script>
+        <link   href="index.css"  rel="stylesheet">
+    </head>
+    <body>
+        <iframe w-id="iframe"></iframe>
+        <main>
+            <div id="toolbar">
+                <span id="filter">[Filter]<div>
+                    <input type="checkbox" w-id="studentFilterCA"/>ALL
+                    <div w-id="studentFilter"></div>
+                </div></span>
+                <w-pager w-id="pager"></w-pager>
+                <span w-id="importBtn">[import]</span>
+                <span w-id="exportBtn">[export]</span>
+                <span w-id="csvExportBtn">[export CSV]</span>
+            </div>
+            <div w-id="answersArea"></div>
+        </main>
+    </body>
+</html>

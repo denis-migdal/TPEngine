@@ -1,16 +1,16 @@
-import { listen }           from "MWL@2026:exports/Reactive/Events";
-import { updateProperties, WithProperties } from "MWL@2026:exports/Reactive/Properties";
-import {ObservationArena}   from "MWL@2026:exports/Reactive/observers";
-import { resolve }          from "MWL@2026:exports/DOM";
+import { listen }           from "MWL@2026/exports/Reactive/Events";
+import { updateProperties, WithProperties } from "MWL@2026/exports/Reactive/Properties";
+import {ObservationArena}   from "MWL@2026/exports/Reactive/observers";
+import { resolve }          from "MWL@2026/exports/DOM";
 
-import BrowserFile from "TPEngine@2026:core/DataStore/BrowserFile";
-import Pager from "TPEngine@2026:core/Corrector/Pager";
-import SessionData from "TPEngine@2026:core/Corrector/SessionData";
-import IndexDB from "TPEngine@2026:core/DataStore/IndexDB";
-import { QuestionData } from "TPEngine@2026:core/StudentWork";
-import { download } from "TPEngine@2026:core/DataStore/core/download";
-import Filter from "TPEngine@2026:core/Corrector/Filter";
-import QuestionGraders from "TPEngine@2026:core/QuestionGrader";
+import {BrowserFile} from "TPEngine@2026/core/DataStore/BrowserFile";
+import {Pager} from "TPEngine@2026/core/Corrector/Pager";
+import {SessionData} from "TPEngine@2026/core/Corrector/SessionData";
+import {IndexDB} from "TPEngine@2026/core/DataStore/IndexDB";
+import { QuestionData } from "TPEngine@2026/core/StudentWork";
+import { download } from "TPEngine@2026/core/DataStore/core/download";
+import {Filter} from "TPEngine@2026/core/Corrector/Filter";
+import {QuestionGraders} from "TPEngine@2026/core/QuestionGrader";
 
 const elems = resolve(document.body, {
                         importBtn      : HTMLElement,

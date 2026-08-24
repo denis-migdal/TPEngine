@@ -1,11 +1,11 @@
-import CodeEditor from "MWL@2026:components/code/code-editor";
-import {defineWebComponent} from "MWL@2026:exports/DOM/WebComponent";
-import { updateProperties, WithProperties } from "MWL@2026:exports/Reactive/Properties";
-import { updateGradeColor } from "TPEngine@2026:core/Questions/core/base";
-import { QTextProperties }  from "TPEngine@2026:core/Questions/QText";
+import {CodeEditor} from "MWL@2026/components/code/code-editor";
+import {defineWebComponent} from "MWL@2026/exports/DOM/WebComponent";
+import { updateProperties, WithProperties } from "MWL@2026/exports/Reactive/Properties";
+import { updateGradeColor } from "TPEngine@2026/core/Questions/core/base";
+import { QTextProperties }  from "TPEngine@2026/core/Questions/QText";
 import { baseStyle, initializeComment } from "../core/base";
 
-const QGText = defineWebComponent({
+const QText = defineWebComponent({
     name      : "qg-text",
     Controller: WithProperties(QTextProperties),
     content   : __LOAD_FILE__("./index.html"),
@@ -39,4 +39,4 @@ const QGText = defineWebComponent({
     }
 })
 
-export default QGText;
+export {QText};

@@ -1,6 +1,6 @@
-import {createPropertiesDeferredRenderer, defineWebComponent} from "MWL@2026:exports/DOM/WebComponent";
-import { Signal, Value } from "MWL@2026:exports/Reactive/Properties/controllers";
-import { WithProperties } from "MWL@2026:exports/Reactive/Properties/";
+import {createPropertiesDeferredRenderer, defineWebComponent} from "MWL@2026/exports/DOM/WebComponent";
+import { Signal, Value } from "MWL@2026/exports/Reactive/Properties/controllers";
+import { WithProperties } from "MWL@2026/exports/Reactive/Properties/";
 
 const Pager = defineWebComponent({
         name      : "wc-pager",
@@ -50,4 +50,4 @@ const Pager = defineWebComponent({
         }
     });
 
-export default Pager;
+export {Pager};

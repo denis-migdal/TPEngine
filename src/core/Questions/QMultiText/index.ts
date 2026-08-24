@@ -1,11 +1,11 @@
-import { html } from "MWL@2026:exports/DOM/";
-import { defineWebComponent, createPropertiesDeferredRenderer } from "MWL@2026:exports/DOM/WebComponent";
-import { updateProperties, WithProperties } from "MWL@2026:exports/Reactive/Properties";
-import { Constant, Fixed, Value, View } from "MWL@2026:exports/Reactive/Properties/controllers";
-import CodeEditor from "MWL@2026:components/code/code-editor";
+import { html } from "MWL@2026/exports/DOM/";
+import { defineWebComponent, createPropertiesDeferredRenderer } from "MWL@2026/exports/DOM/WebComponent";
+import { updateProperties, WithProperties } from "MWL@2026/exports/Reactive/Properties";
+import { Constant, Fixed, Value, View } from "MWL@2026/exports/Reactive/Properties/controllers";
+import { CodeEditor } from "MWL@2026/components/code/code-editor";
 
 import { baseStyle, initializeMetaRendering, QProperties, updateGradeColor } from "../core/base";
-import { listen, observe } from "MWL@2026:core/Reactive/Observers";
+import { listen, observe } from "MWL@2026/core/Reactive/Observers";
 
 export const QMultiTextProperties = {
     ...QProperties<null|readonly string[]>(null),
@@ -26,7 +26,7 @@ export const QMultiTextProperties = {
     }),
 }
 
-export default defineWebComponent({
+const QMultiText = defineWebComponent({
         name      : "q-multitext",
         Controller: WithProperties(QMultiTextProperties),
         content: __LOAD_FILE__("./index.html"),
@@ -107,3 +107,5 @@ function syncArray(     list: WithProperties<{answer: readonly string[]|null}>,
                         list);
     });
 }
+
+export {QMultiText}

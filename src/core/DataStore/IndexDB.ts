@@ -63,7 +63,7 @@ class IDB<T = ArrayBuffer> {
     }
 }
 
-export default class IndexDB extends DataStore {
+export class IndexDB extends DataStore {
 
     //TODO: ArrayBuffer would be better...
     readonly idb;

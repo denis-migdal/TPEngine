@@ -1,4 +1,4 @@
-import { WithProperties } from "MWL@2026:exports/Reactive/Properties";
+import { WithProperties } from "MWL@2026/exports/Reactive/Properties";
 
 export const baseStyle = __LOAD_FILE__("./index.css");
 

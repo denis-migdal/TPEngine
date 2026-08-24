@@ -1,10 +1,10 @@
-import CodeEditor from "MWL@2026:components/code/code-editor";
-import { defineWebComponent } from "MWL@2026:exports/DOM/WebComponent";
-import { WithProperties } from "MWL@2026:exports/Reactive/Properties";
-import { Value } from "MWL@2026:exports/Reactive/Properties/controllers";
-import { baseStyle } from "TPEngine@2026:core/QuestionGrader/core/base";
+import { CodeEditor } from "MWL@2026/components/code/code-editor";
+import { defineWebComponent } from "MWL@2026/exports/DOM/WebComponent";
+import { WithProperties } from "MWL@2026/exports/Reactive/Properties";
+import { Value } from "MWL@2026/exports/Reactive/Properties/controllers";
+import { baseStyle } from "TPEngine@2026/core/QuestionGrader/core/base";
 
-import { updateGradeColor } from "TPEngine@2026:core/Questions/core/base";
+import { updateGradeColor } from "TPEngine@2026/core/Questions/core/base";
 
 const QMultiTextAnswer = defineWebComponent({
     name      : "qg-multitext-answer",
@@ -33,4 +33,4 @@ const QMultiTextAnswer = defineWebComponent({
     }
 });
 
-export default QMultiTextAnswer;
+export {QMultiTextAnswer};

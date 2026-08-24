@@ -1,5 +1,5 @@
-import { Fixed, Value } from "MWL@2026:exports/Reactive/Properties/controllers";
-import {PropertiesRenderer} from "MWL@2026:exports/Reactive/Properties";
+import { Fixed, Value } from "MWL@2026/exports/Reactive/Properties/controllers";
+import {PropertiesRenderer} from "MWL@2026/exports/Reactive/Properties";
 
 export function QProperties<T>(initialAnswer: T) {
     return {

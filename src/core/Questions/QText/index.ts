@@ -1,10 +1,10 @@
-import CodeEditor from "MWL@2026:components/code/code-editor";
-import { defineWebComponent, createPropertiesDeferredRenderer } from "MWL@2026:exports/DOM/WebComponent";
-import { Constant, Value } from "MWL@2026:exports/Reactive/Properties/controllers";
-import { WithProperties } from "MWL@2026:exports/Reactive/Properties/";
+import { CodeEditor } from "MWL@2026/components/code/code-editor";
+import { defineWebComponent, createPropertiesDeferredRenderer } from "MWL@2026/exports/DOM/WebComponent";
+import { Constant, Value } from "MWL@2026/exports/Reactive/Properties/controllers";
+import { WithProperties } from "MWL@2026/exports/Reactive/Properties/";
 
 import { baseStyle, initializeMetaRendering, QProperties } from "../core/base";
-import { syncProperties } from "MWL@2026:exports/Reactive/Properties/sync";
+import { syncProperties } from "MWL@2026/exports/Reactive/Properties/sync";
 
 // we assume empty string = null, avoid handling this special case.
 export const QTextProperties = {
@@ -13,7 +13,7 @@ export const QTextProperties = {
     lang   : Value<string|null>(null),
 }
 
-export default defineWebComponent({
+const QText = defineWebComponent({
         name      : "q-text",
         Controller: WithProperties(QTextProperties),
         content: __LOAD_FILE__("./index.html"),
@@ -37,3 +37,5 @@ export default defineWebComponent({
             initializeMetaRendering(this, propsRenderer, true);
         }
     });
+
+export {QText}

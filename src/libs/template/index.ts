@@ -1,7 +1,7 @@
-import { html } from "MWL@2026:exports/DOM";
-import { listen } from "MWL@2026:exports/Reactive/Events";
-import BrowserFile from "TPEngine@2026:core/DataStore/BrowserFile";
-import { QuestionElement, SubjectPage } from "TPEngine@2026:core/Subject/SubjectPage";
+import { html } from "MWL@2026/exports/DOM";
+import { listen } from "MWL@2026/exports/Reactive/Events";
+import {BrowserFile} from "TPEngine@2026/core/DataStore/BrowserFile";
+import { QuestionElement, SubjectPage } from "TPEngine@2026/core/Subject/SubjectPage";
 
 const p = new URLSearchParams(location.search);
 

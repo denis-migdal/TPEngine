@@ -2,7 +2,7 @@ import { buffer2str, str2buffer } from "./core/buffer";
 import { DataStore, Serializable } from "./core/interfaces";
 
 //TODO: rework...
-export default class LocalStorage extends DataStore {
+export class LocalStorage extends DataStore {
 
     readonly prefix: string;
 

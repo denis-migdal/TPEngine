@@ -1,13 +1,13 @@
-import { defineWebComponent } from "MWL@2026:exports/DOM/WebComponent";
+import { defineWebComponent } from "MWL@2026/exports/DOM/WebComponent";
 import { baseStyle, initializeComment } from "../core/base";
-import { WithProperties } from "MWL@2026:exports/Reactive/Properties";
-import { QMultiTextProperties } from "TPEngine@2026:core/Questions/QMultiText";
-import QMultiTextAnswer from "./Answer";
-import { listen } from "MWL@2026:exports/Reactive/Events";
+import { WithProperties } from "MWL@2026/exports/Reactive/Properties";
+import { QMultiTextProperties } from "TPEngine@2026/core/Questions/QMultiText";
+import { QMultiTextAnswer } from "./Answer";
+import { listen } from "MWL@2026/exports/Reactive/Events";
 
 type Answer = WithProperties<{grade: number|null}>
 
-const QGMultiText = defineWebComponent({
+const QMultiText = defineWebComponent({
     name      : "qg-multitext",
     Controller: WithProperties(QMultiTextProperties),
     content   : __LOAD_FILE__("./index.html"),
@@ -59,4 +59,4 @@ function linkArray(     list: WithProperties<{scores: readonly number[]|null}>,
         listen(elements[i], update);
 }
 
-export default QGMultiText;
+export {QMultiText};

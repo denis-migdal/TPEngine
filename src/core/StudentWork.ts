@@ -1,5 +1,5 @@
-import { ObservableObject, ObservableProxy, trigger } from "MWL@2026:exports/Reactive/Events";
-import { Properties  } from "MWL@2026:exports/Reactive/Properties";
+import { ObservableObject, ObservableProxy, trigger } from "MWL@2026/exports/Reactive/Events";
+import { Properties  } from "MWL@2026/exports/Reactive/Properties";
 
 import JSZip from "jszip";
 import { Serializable } from "./DataStore/core/interfaces";
@@ -17,7 +17,7 @@ export type QuestionData<T extends unknown> = {
 export type Question<T extends unknown> = Properties<QuestionData<T>>;
 
 
-export default class StudentWork
+export class StudentWork
                         extends ObservableProxy<Dict<QuestionData<unknown>>>
                         implements Serializable {
 

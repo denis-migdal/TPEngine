@@ -1,0 +1,30 @@
+{
+    "tasks": {
+        "test": "deno test ./**/*.ts --allow-all"
+    },
+    "nodeModulesDir": "auto",
+    "exclude": [
+        "node_modules/"
+    ],
+    "compilerOptions": {
+        "lib": ["deno.ns", "dom", "dom.iterable"]
+    },
+    "unstable": [
+        "sloppy-imports",
+        "node-globals"
+    ],
+    "imports": {
+        "std/assert": "jsr:@std/assert",
+        "npm/linkedom": "npm:linkedom",
+        "@config": "./config.ts",
+        "MWL@2026/": "../libs/MWL@2026/src/",
+        "TPEngine@2026/": "../src/"
+    },
+    "lint": {
+        "rules": {
+        "exclude": [
+            "no-sloppy-imports"
+        ]
+        }
+    }
+}
