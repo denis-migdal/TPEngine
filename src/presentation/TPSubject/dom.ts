@@ -1,7 +1,6 @@
-//TODO: use exports
-import { Widget } from "MWL@2026/core/DOM/Widget";
+import { Widget } from "MWL@2026/exports/Widget";
 import { QuestionModel } from "TPEngine@2026/models/Questions";
-import "TPEngine@2026/widgets/Questions";
+import "TPEngine@2026/exports/Questions";
 
 //TODO: move utils
 export function mapValues<K extends string, T, U>(

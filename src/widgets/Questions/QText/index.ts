@@ -1,5 +1,5 @@
 import { CodeEditor } from "MWL@2026/widgets/code/code-editor";
-import {defineWidget, Coordinator, View, DeferredEffects} from "MWL@2026/exports/DOM/Widget";
+import {defineWidget, Coordinator, View, DeferredEffects} from "MWL@2026/exports/Widget";
 import {bindProperties} from "MWL@2026/exports/Reactive/PropertySystem";
 import { QTextModel } from "TPEngine@2026/models/Questions";
 import { baseStyle, initializeMetaRendering } from "../core/base";

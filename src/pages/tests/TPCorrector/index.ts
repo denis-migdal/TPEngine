@@ -1,5 +1,6 @@
-import { listen }           from "MWL@2026/exports/Reactive/Events";
-import { frameEffect, resolve }          from "MWL@2026/exports/DOM";
+import { listen }      from "MWL@2026/exports/Reactive/Observable";
+import { resolve }     from "MWL@2026/exports/DOM";
+import { frameEffect } from "MWL@2026/exports/browser/scheduler";
 
 import {StudentWork} from "TPEngine@2026/models/StudentWork";
 import { SessionCodec } from "TPEngine@2026/ports/codecs/Session";
@@ -13,7 +14,6 @@ import { BrowserFileDriver } from "TPEngine@2026/ports/stores/drivers/BrowserFil
 import { throttle } from "TPEngine@2026/presentation/TPSubject";
 import { download } from "TPEngine@2026/ports/stores/core/download";
 
-//TODO: transform into Widget
 import {Pager} from "TPEngine@2026/widgets/Pager";
 import { createAnswerReviewWidget } from "TPEngine@2026/widgets/AnswerReviews";
 import { pauseReactions, resumeReactions } from "MWL@2026/core/Reactive/PropertySystem/ReactiveObject/ReactiveScheduler";

@@ -1,6 +1,6 @@
 import { setProperties } from "MWL@2026/core/Reactive/PropertySystem/Properties/PropertiesProvider";
 import { pauseReactions, resumeReactions, triggerReactiveObject } from "MWL@2026/core/Reactive/PropertySystem/ReactiveObject/ReactiveScheduler";
-import { Coordinator, DeferredEffects, defineWidget, View } from "MWL@2026/exports/DOM/Widget";
+import { Coordinator, DeferredEffects, defineWidget, View } from "MWL@2026/exports/Widget";
 import { WithProperties } from "MWL@2026/exports/Reactive/PropertySystem/";
 import { Value } from "MWL@2026/exports/Reactive/PropertySystem/controllers";
 

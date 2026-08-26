@@ -1,7 +1,6 @@
 import { updateProperties } from "MWL@2026/exports/Reactive/PropertySystem";
 import { AnswerReviewRegistry, baseStyle, initializeComment } from "../core/";
-import { defineWidget } from "MWL@2026/core/DOM/Widget";
-import { Coordinator, View } from "MWL@2026/exports/DOM/Widget";
+import { defineWidget, Coordinator, View } from "MWL@2026/exports/Widget";
 import { updateGradeColor } from "TPEngine@2026/widgets/Questions/core/base";
 import { QTextModel } from "TPEngine@2026/models/Questions";
 import { CodeEditor } from "MWL@2026/widgets/code/code-editor";

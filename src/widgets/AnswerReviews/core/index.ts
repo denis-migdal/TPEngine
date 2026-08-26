@@ -1,4 +1,4 @@
-import { WidgetCstr } from "MWL@2026/core/DOM/Widget";
+import { WidgetCstr } from "MWL@2026/exports/Widget";
 import { WithProperties } from "MWL@2026/exports/Reactive/PropertySystem";
 
 type ARWidgetCstr = WidgetCstr<{readonly type: string}>;

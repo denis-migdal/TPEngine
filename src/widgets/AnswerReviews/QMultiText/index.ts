@@ -1,7 +1,6 @@
 import { baseStyle, initializeComment } from "../core/";
 import { ARMultiTextAnswerWidget } from "./Answer";
-import { defineWidget } from "MWL@2026/core/DOM/Widget";
-import { Coordinator, View } from "MWL@2026/exports/DOM/Widget";
+import { defineWidget, Coordinator, View } from "MWL@2026/exports/Widget";
 import { QMultiTextModel } from "TPEngine@2026/models/Questions";
 
 const ARMultiTextWidget = defineWidget(

@@ -1,5 +1,3 @@
-//import { Fixed, Value } from "MWL@2026/exports/Reactive/Properties/controllers";
-
 import { PropertiesEffects } from "MWL@2026/core/Reactive/PropertySystem/Properties/PropertiesEffects";
 
 export const baseStyle = __LOAD_FILE__("./index.css");
