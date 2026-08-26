@@ -1,7 +1,0 @@
-:host {
-    display: flex;
-
-    & code-editor {
-        width: 100%;
-    }
-}

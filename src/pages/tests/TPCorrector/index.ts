@@ -10,7 +10,7 @@ import {SessionData} from "TPEngine@2026/ports/codecs/Session";
 
 import { createIndexDBStore, DataStore } from "TPEngine@2026/ports/stores/DataStore";
 import { BrowserFileDriver } from "TPEngine@2026/ports/stores/drivers/BrowserFile";
-import { throttle } from "TPEngine@2026/ports/browser/TPSubjectPage";
+import { throttle } from "TPEngine@2026/presentation/TPSubject";
 import { download } from "TPEngine@2026/ports/stores/core/download";
 
 //TODO: transform into Widget
@@ -18,7 +18,7 @@ import {Pager} from "TPEngine@2026/widgets/Pager";
 import { createAnswerReviewWidget } from "TPEngine@2026/widgets/AnswerReviews";
 import { pauseReactions, resumeReactions } from "MWL@2026/core/Reactive/PropertySystem/ReactiveObject/ReactiveScheduler";
 import { forwardProperties } from "MWL@2026/core/Reactive/PropertySystem/Properties/sync";
-import { Filter } from "TPEngine@2026/ports/browser/TPCorrectorPage";
+import { Filter } from "TPEngine@2026/presentation/TPCorrector";
 
 const CUR_SUBJECT_LSNAME = "TPEngine.TPCorrector.cur";
 

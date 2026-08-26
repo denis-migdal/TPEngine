@@ -51,8 +51,6 @@ async function initStudentWork(
                         work: StudentWork
                     ) {
 
-    console.warn(cfg.isInCorrector);
-
     if( cfg.isInCorrector )
         return;
 

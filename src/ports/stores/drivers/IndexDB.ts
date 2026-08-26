@@ -1,4 +1,4 @@
-import { str2buffer } from "TPEngine@2026/core/DataStore/core/buffer";
+import { str2buffer } from "../core/buffer";
 import { Driver } from "../core";
 
 // thanks ChatGPT...
