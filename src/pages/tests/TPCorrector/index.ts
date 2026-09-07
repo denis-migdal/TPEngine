@@ -202,7 +202,7 @@ async function loadSession(
 function resetReviewSystem(elems: {pager : Pager}, session: Session) {
 
     const keys = Object.keys(session.solution.questions);
-
+    
     pauseReactions(session);
 
     answerReviews.length = keys.length;
