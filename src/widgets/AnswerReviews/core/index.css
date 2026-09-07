@@ -13,7 +13,7 @@
         outline: 2px solid var(--grade-color);
     }
 
-    & [w-id="score"] {
+    & #score {
         text-align: center;
         font-weight: bold;
 

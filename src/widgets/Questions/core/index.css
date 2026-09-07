@@ -10,7 +10,7 @@
     --grade-color: transparent;
     --comment    : "";
 
-    & [w-id="grade"] {
+    & #grade {
         font-weight: bold;
         float:right;
     }

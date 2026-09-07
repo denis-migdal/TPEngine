@@ -9,7 +9,7 @@ export function createToolbar(
     const toolbarHTML = html( __LOAD_FILE__("./index.html") );
     document.body.append(toolbarHTML);
 
-    const elems = resolve(toolbarHTML, {
+    const elems = resolve(document, {
         "importBtn": HTMLElement,
         "exportBtn": HTMLElement
     });

@@ -2,7 +2,7 @@
 
     --nbCols: 1;
 
-    [w-id="answersList"] {
+    #answersList {
         display: grid;
         grid-template-columns: repeat( var(--nbCols), 0fr 1fr);
         column-gap: 5px;

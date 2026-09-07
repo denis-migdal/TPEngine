@@ -6,7 +6,7 @@
 
 :host {
 
-    & [w-id="answer"] {
+    & #answer {
         display: block;
         width: 60%;
         aspect-ratio: 16/9;
@@ -16,7 +16,7 @@
         border-radius: 4px 4px 0px 0px;
     }
 
-    & [w-id="uploadBtn"] {
+    & #uploadBtn {
         display: block;
         width: 60%;
         margin-left: auto;
