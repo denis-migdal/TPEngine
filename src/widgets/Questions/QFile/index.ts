@@ -28,7 +28,10 @@ const QFileWidget = defineWidget(
                     const answer = ctrler.properties.answer;
 
                     if( answer === null) {
-                        answerViewer.src = "about:blank";
+                        // about:blank generate browser warnings.
+                        // we could use a BlankPage (then do not set style)
+                        // after load.
+                        answerViewer.removeAttribute("src");
                         return;
                     }
 
@@ -39,7 +42,9 @@ const QFileWidget = defineWidget(
 
             this.elements.uploadBtn.addEventListener("click", async () => {
 
-                const file = (await upload(ctrler.properties.accept))!;
+                const file = await upload(ctrler.properties.accept);
+
+                if( file === null) return;
                 
                 ctrler.properties.answer = {
                     type   : file.type,
