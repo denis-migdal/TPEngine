@@ -11,19 +11,39 @@ const QFileWidget = defineWidget(
         style  : [baseStyle, __LOAD_FILE__("./index.css")],
         elements: {
             grade    : HTMLElement,
-            answer   : HTMLIFrameElement,
+            answer   : HTMLElement,
+            content  : HTMLIFrameElement,
             uploadBtn: HTMLButtonElement,
+            expandBtn  : HTMLElement,
+            expandModal: HTMLDialogElement,
         },
         setup(ctrler) {
 
             const hasViewer = this.target.getAttribute("viewer") !== "false";
-            const answerViewer = this.elements.answer;
+            const answerViewer = this.elements.content;
 
             const effects = DeferredEffects(ctrler, this.renderer);
 
             initializeMetaRendering(this, effects, true);
 
-            if( hasViewer )
+            if( hasViewer ) {
+
+                // handle expansion
+                const modal = this.elements.expandModal;
+                const answerArea = this.elements.answer;
+
+                this.elements.expandBtn.addEventListener("click", () => {
+                    modal.append(answerViewer);
+                    modal.showModal();
+                })
+
+                modal.addEventListener("click", (event) => {
+                    if (event.target === modal) {
+                        answerArea.append(answerViewer);
+                        modal.close();
+                    }
+                });
+
                 effects.add("answer", () => {
                     const answer = ctrler.properties.answer;
 
@@ -39,6 +59,7 @@ const QFileWidget = defineWidget(
 
                     answerViewer.src = URL.createObjectURL(file);
                 });
+            }
 
             this.elements.uploadBtn.addEventListener("click", async () => {
 
