@@ -48,8 +48,6 @@ function getSolution(p: URLSearchParams) {
 
     const cpwd = p.get("cpwd");
 
-    console.warn("soluce", cpwd);
-
     if( cpwd === null )
         return null;
 
@@ -62,8 +60,6 @@ async function loadSolution(cpwd: string) {
     const encrypted = await (await fetch(file)).arrayBuffer();
     
     const decrypted = await decrypt(encrypted, cpwd);
-
-    console.warn("solution");
 
     return StudentWorkCodec.decode(decrypted);
 }

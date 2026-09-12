@@ -18,8 +18,6 @@ export async function initTPSubjectPage() {
     const questionsWidgets = getQuestions();
     const work             = createStudentWork(questionsWidgets);
 
-    console.warn("cfg", cfg);
-
     // asap to catch messages.
     if( cfg.isInCorrector) enableCorrectorFeatures(work, questionsWidgets);
     
@@ -53,14 +51,11 @@ async function initStudentWork(
                         work: StudentWork
                     ) {
 
-    console.warn("init work", cfg.solution, cfg.isInCorrector);
-
     if( cfg.isInCorrector )
         return;
 
     if( cfg.solution !== null ) {
         loadData(await cfg.solution, work);
-        console.warn("loaded");
         return;
     }
 
